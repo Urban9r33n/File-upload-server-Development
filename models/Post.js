@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Counter = require('./Counter');
+var Counter = require('./Dailycounter');
 
 // schema
 var postSchema = mongoose.Schema({
@@ -22,6 +23,9 @@ var postSchema = mongoose.Schema({
   },
   numId: {
     type: Number
+  },
+  numId_daily: {
+    type: String
   },
   attachment: {
     type: mongoose.Schema.Types.ObjectId,
@@ -56,24 +60,76 @@ var postSchema = mongoose.Schema({
   sender: {
     type: String,
     required: [true, 'Sender is required!']
+  },
+  private_check: {
+    type: Boolean,
+    requried: [true, 'checker is requried!']
   }
+  //mailist//
 });
+
 
 postSchema.pre('save', async function(next) {
   var post = this;
+
   if (post.isNew) {
+    // article counter
     counter = await Counter.findOne({
       name: 'posts'
     }).exec();
+
     if (!counter) counter = await Counter.create({
       name: 'posts'
     });
+
     counter.count++;
     counter.save();
     post.numId = counter.count;
   }
+
+
+  if (post.isNew) {
+
+    // comparing today and temp => new article number
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = yyyy + mm + dd;
+
+    daily_counter = await Daily_Counter.findOne({
+      name: 'posts'
+    }).exec();
+
+    if (!daily_counter) daily_counter = await Daily_Counter.create({
+      name: 'posts'
+    });
+
+
+
+    if (daily_counter.today === daily_counter.temp) {
+      daily_counter.count++;
+      daily_counter.save();
+      post.numId_daily = today + "-"
+      daily_counter.count;
+    } else {
+      daily_counter.count = 1;
+      daily_counter.save();
+
+      post.numId_daily = today + "-";
+      daily_counter.count;
+
+      daily_counter.temp = Date.now;
+    }
+  }
+
+
   return next();
 });
+
+
 
 // model & export
 var Post = mongoose.model('post', postSchema);
