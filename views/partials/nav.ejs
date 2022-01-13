@@ -1,0 +1,81 @@
+<nav class="navbar navbar-expand-sm navbar-light bg-light mb-3">
+
+
+
+  <div class="container">
+    <img class="inzi logo2" src="/image/INZI_logo4.png" alt="INZI logo" style="width: 6%; margin-right: 2%;">
+
+    <!-- <div class="navbar-brand">VDX_SERVER</div> -->
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav">
+
+        <% if(isAuthenticated){ %>
+        <li class="nav-item"><a href="/main" class="nav-link">Home</a></li>
+        <% } else { %>
+        <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+        <% } %>
+
+        <!-- <li class="nav-item"><a href="/about" class="nav-link">About</a></li> -->
+        <!-- <li class="nav-item"><a href="/posts" class="nav-link">posts</a></li> -->
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <% if(isAuthenticated){ %>
+        <!-- <li class="nav-item"><a href="/users/<%= currentUser.username %>" class="nav-link">계정 관리</a></li> -->
+        <li class="nav-item"><a href="/logout" class="nav-link">로그아웃</a></li>
+        <% } else { %>
+        <li class="nav-item"><a href="/users/new" class="nav-link">회원가입</a></li>
+        <li class="nav-item"><a href="/login" class="nav-link">로그인</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+
+<div class="bd">
+
+  <div id="mySidebar" class="sidebar">
+
+
+
+
+    <div class="d-flex flex-column vh-100 flex-shrink-0 p-3 text-white bg-dark" style="width: 250px; height:100vh;"> <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"> <svg class="bi me-2"
+          width="40" height="32">
+        </svg> <span class="fs-4">VDX_SERVER</span> </a>
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <hr>
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item"> <a href="/main" class="left_nav nav-link active" aria-current="page"> <i class="fa fa-home"></i><span class="ms-2"> Home</span> </a> </li>
+        <li> <a href="/posts" class="left_nav nav-link text-white"> <i class="fa fa-database"></i><span class="ms-2"> VDX_SERVER</span> </a> </li>
+        <li> <a href="/posts/new" class="left_nav nav-link text-white"> <i class="fa fa-pencil"></i><span class="ms-2"> 새 글 쓰기</span> </a> </li>
+        <li> <a href="/users/<%= currentUser.username %>" class="left_nav nav-link text-white"> <i class="fa fa-cog"></i><span class="ms-2"> Settings</span> </a> </li>
+
+      </ul>
+      <hr>
+      <div class="dropdown"> <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+          <strong> 안녕하세요! <%=currentUser.name %>님!</strong>
+          <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="/posts/new">새 글 쓰기</a></li>
+            <li><a class="dropdown-item" href="/users/<%= currentUser.username %>">계정관리</a></li>
+            <!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#">로그아웃</a></li>
+          </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="main">
+
+  <button class="openbtn" onclick="openNav()">&#9776; </button>
+
+</div>

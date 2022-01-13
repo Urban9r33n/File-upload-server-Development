@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%- include('../partials/head') %>
+</head>
+
+<body>
+  <%- include('../partials/nav') %>
+
+
+  <div class="container mb-3">
+    <br />
+    <h2><strong> 안녕하세요! <%=currentUser.name %>님!</strong></h2>
+
+    <div class="row c-r">
+      <div class="col-md-6">
+        <div class="card text-center cards">
+          <div class="card-header">
+            VDX_SERVER
+          </div>
+          <div class="card-body ">
+            <h5 class="card-title">VDX_SERVER로 이동하기</h5>
+            <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+            <a href="/posts" class="btn btn-dark">VDX_SERVER</a>
+          </div>
+          <!-- <div class="card-footer text-muted">
+    2 days ago
+  </div> -->
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card text-center cards">
+          <div class="card-header">
+            계정 관리
+          </div>
+          <div class="card-body ">
+            <h5 class="card-title">계정 설정으로 이동하기</h5>
+            <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+            <a href="/users/<%= currentUser.username %>" class="btn btn-dark ">Settings</a>
+          </div>
+          <!-- <div class="card-footer text-muted">
+    2 days ago
+  </div> -->
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</body>
+
+</html>

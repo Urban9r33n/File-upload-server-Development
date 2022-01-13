@@ -1,0 +1,143 @@
+body {
+  background-color: #393E46;
+}
+
+#main {
+  background-color: #EEEEEE;
+  width: 100%;
+  position: relative;
+}
+
+
+.home-logo {
+  position: absolute;
+  padding-top: 3.5rem;
+  right: 15%;
+  font-size: 40px;
+  color:#222831;
+}
+
+.home-logo:hover {
+  color: #FFD369;
+}
+
+
+
+.div {
+  margin: 0;
+  padding: 0;
+}
+
+.container-fluid {
+  padding: 3% 15% 7%;
+}
+
+.labels {
+  padding-bottom: 1%;
+}
+
+.inzi-logo {
+  position: absolute;
+  padding-top: 3.5rem;
+  left: 15%;
+}
+
+h1 {
+  font-family: 'Nanum Gothic';
+  font-size: 25px;
+  font-weight: 900;
+  color: #222831;
+}
+
+h2 {
+  text-align: center;
+  font-family: 'Nanum Gothic';
+  font-size: 16px;
+  font-weight: 600;
+  color: #222831;
+}
+
+.button-vdx {
+  padding-top: 9rem;
+  text-align: center;
+}
+
+.bt-pos {
+  position: absolute;
+  right: 15%
+}
+
+
+#footer {
+  width: 100%;
+  position: relative;
+  background-color: #222831;
+  color: #EEEEEE;
+  padding: 1%;
+}
+
+#footer .l_box {
+  float: none;
+  text-align: center;
+}
+
+#footer .l_box .txt>b {
+  font-size: 18px;
+  font-weight: 500;
+  color: #FFD369;
+  display: block;
+}
+
+#footer .l_box .txt>a {
+  font-size: 13px;
+  font-weight: 300;
+  color: #EEEEEE;
+  line-height: 1;
+  margin-top: 3px;
+}
+
+#footer .l_box .txt ul {
+  text-align: left;
+}
+
+#footer .l_box .txt {
+  margin-left: 0;
+  margin-top: 20px;
+  font-family: 'Nanum Gothic';
+  font-size: 12px;
+  font-weight: 200;
+}
+
+#footer .r_box ul {
+    text-align: center;
+}
+
+#footer .r_box p {
+    font-size: 12px;
+    color: #EEEEEE;
+    font-weight: 300;
+    margin-top: 5px;
+}
+
+#footer .l_box .txt ul {
+    margin-top: 15px;
+}
+
+#footer .l_box .txt ul li {
+    margin-top: 4px;
+    margin-left: 30px;
+}
+
+#footer .l_box .txt ul li em {
+    padding: 0 3px;
+    font-family: 'Nanum Gothic';
+    font-size: 12px;
+    font-weight: 400;
+    color: #EEEEE;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#footer .copyright {
+  text-align: center;
+}

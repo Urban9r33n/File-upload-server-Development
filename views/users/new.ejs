@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%- include('../partials/head') %>
+</head>
+
+<body>
+
+  <div style="text-align:center; margin:5%;">
+
+
+    <img class="inzi logo2" src="/image/INZI_logo4.png" alt="INZI logo">
+    <h1>INZI DISPLAY VDX SERVER</h1>
+
+    <h2>환영합니다</h2>
+  </div>
+
+
+  <div class="container mb-3">
+
+    <h3 class="contentBoxTop mb-3">New User</h3>
+
+    <form action="/users" method="post">
+
+      <div class="form-group row">
+        <label for="team" class="col-sm-3 col-form-label">부서</label>
+        <div class="col-sm-9">
+          <select class="form-control" id="team" name="team" value="<%= user.team %>" <%= (errors.team)?'is-invalid':'' %>">
+            <option value=""></option>
+            <option value="생산">생산</option>
+            <option value="개발">개발</option>
+            <option value="영업">영업</option>
+            <option value="경영">경영</option>
+            <option value="물류">물류</option>
+          </select>
+          <% if(errors.team){ %>
+          <span class="invalid-feedback"><%= errors.team.message %></span>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="username" class="col-sm-3 col-form-label">아이디</label>
+        <div class="col-sm-9">
+          <input type="text" id="username" name="username" value="<%= user.username %>" class="form-control <%= (errors.username)?'is-invalid':'' %>">
+          <% if(errors.username){ %>
+          <span class="invalid-feedback"><%= errors.username.message %></span>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="name" class="col-sm-3 col-form-label">이름</label>
+        <div class="col-sm-9">
+          <input type="text" id="name" name="name" value="<%= user.name %>" class="form-control <%= (errors.name)?'is-invalid':'' %>">
+          <% if(errors.name){ %>
+          <span class="invalid-feedback"><%= errors.name.message %></span>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="email" class="col-sm-3 col-form-label">Email</label>
+        <div class="col-sm-9">
+          <input type="text" id="email" name="email" value="<%= user.email %>" class="form-control <%= (errors.email)?'is-invalid':'' %>">
+          <% if(errors.email){ %>
+          <span class="invalid-feedback"><%= errors.email.message %></span>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="password" class="col-sm-3 col-form-label">비밀번호</label>
+        <div class="col-sm-9">
+          <input type="password" id="password" name="password" value="" class="form-control <%= (errors.password)?'is-invalid':'' %>">
+          <% if(errors.password){ %>
+          <span class="invalid-feedback"><%= errors.password.message %></span>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="passwordConfirmation" class="col-sm-3 col-form-label">비밀번호 확인</label>
+        <div class="col-sm-9 col-sm-offset-3">
+          <input type="password" id="passwordConfirmation" name="passwordConfirmation" value="" class="form-control <%= (errors.passwordConfirmation)?'is-invalid':'' %>">
+          <% if(errors.passwordConfirmation){ %>
+          <span class="invalid-feedback"><%= errors.passwordConfirmation.message %></span>
+          <% } %>
+        </div>
+      </div>
+      <p>
+        <small>*Required</small>
+      </p>
+
+      <% if(errors.unhandled){ %>
+      <div class="alert alert-danger">
+        <%= errors.unhandled %>
+      </div>
+      <% } %>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+
+    </form>
+
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>INZI-VDX 글쓰기 모드.</title>
+  <link rel="shortcut icon" href="../image/INZI_logo3.png" <meta name="author" content="TG">
+  <meta name="description" content="인지디스플레이 VDX 서버에 오신 것을 환영합니다.">
+
+  <!-- 글쓰기 에디터 -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+
+  <!-- 폰트/Fonts -->
+  <!-- 현재 적용된 폰트 목록/Current Fonts: 나눔고딕/Nanum Gothic (Regular 400,Bold 700, Extra-Bold 800) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+
+  <!-- css -->
+  <link rel="stylesheet" href="write.css">
+
+  <!-- Awesome font -->
+  <script src="https://kit.fontawesome.com/3573fc872a.js" crossorigin="anonymous"></script>
+
+
+<body>
+
+
+  <section id="main">
+    <a href="../index.html">
+      <i class="home-logo fas fa-home"></i>
+    </a>
+
+    <div class="inzi-logo">
+      <a href="">
+        <img class="inzi logo2" src="../image/INZI_logo2.png" alt="INZI logo">
+      </a>
+    </div>
+
+    <div class="container-fluid">
+
+      <h1>글 쓰 기</h1>
+
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">제 목</span>
+        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+      </div>
+
+
+      <!-- 파일추가 :https://tyrannocoding.tistory.com/53 -->
+
+      <div class="file-up">
+
+
+        <button id="btn-upload" type="button" style="border: 1px solid #ddd; outline: none;">파일 추가</button>
+        <input id="input_file" multiple="multiple" type="file" style="display:none;">
+
+      </div>
+
+
+
+      <textarea id="summernote" name="editordata"></textarea>
+      <script>
+        $(document).ready(function() {
+          $('#summernote').summernote({
+            height: 500,
+            minHeight: 500,
+            maxHeight: 500,
+            focus: true,
+            lang: "ko-KR",
+            placeholder: '내용을 입력해주세요.',
+            toolbar: [
+              ['fontname', ['fontname']],
+              ['fontsize', ['fontsize']],
+              ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+              ['color', ['forecolor', 'color']],
+              ['table', ['table']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']],
+              ['view', ['fullscreen', 'help']]
+            ],
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', '맑은 고딕', '궁서', '굴림체',
+              '굴림', '돋음체', '바탕체'
+            ],
+            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36',
+              '50', '72'
+            ]
+          });
+        });
+      </script>
+    </div>
+
+  </section>
+
+  <section id="footer">
+    <div id="footer" class="on">
+      <div class="size clear">
+        <div class="l_box">
+          <p class="img f_logo"><img src="../image/INZI_logo4.png"></p>
+          <div class="txt">
+            <b>㈜인지디스플레이</b>
+
+            <ul>
+              <li class="st"><em>본사:</em><span class="ad">경기도 안산시 단원구 동산로 88번길</span><em class="mbr2"></em><span class="fir">Tel : 031) 491 - 9771</span></li>
+              <li><em>디스플레이사업부: </em><span class="ad">충청남도 예산군 예산읍 벚꽃로 388길 7 </span><em class="mbr2"></em><span class="fir">Tel : 041) 330 – 3001 </span><span>Fax : 041) 330 – 3007</span></li>
+              <li class="st"><em>자동차사업부: </em><span class="ad">충청남도 당진시 부곡공단4길 28-156 </span><em class="mbr2"></em><span class="fir"> Tel : 041)359-5000</span></li>
+              <li><em>세라믹사업부: </em><span class="ad">경기도 안성시 원곡면 기업단지로 159</span><em class="mbr2"></em><span class="fir">Tel : 031) 657 – 7590 </span><span>Fax : 031) 656 – 8557</span></li>
+            </ul>
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="copyright col-lg-12">
+            <p>COPYRIGHT© INZI DISPLAY ALL RIGHTS RESERVED</p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+
+  </section>
+
+</body>
+
+<script>
+  $(function() {
+    $('#btn-upload').click(function(e) {
+      e.preventDefault();
+      $('#input_file').click();
+    });
+  });
+</script>
+
+</html>
