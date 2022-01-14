@@ -78,8 +78,12 @@ router.get('/', util.isLoggedin, async function(req, res) {
           author: {
             username: 1,
           },
-          views: 1,
+          numId_daily: 1,
           numId: 1,
+          nation: 1,
+          enterprise: 1,
+          code: 1,
+          sender:1,
           attachment: {
             $cond: [{
               $and: ['$attachment', {
@@ -110,9 +114,11 @@ router.get('/', util.isLoggedin, async function(req, res) {
 router.get('/new', util.isLoggedin, function(req, res) {
   var post = req.flash('post')[0] || {};
   var errors = req.flash('errors')[0] || {};
+
   res.render('posts/new', {
     post: post,
-    errors: errors
+    errors: errors,
+
   });
 });
 

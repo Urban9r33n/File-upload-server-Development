@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Counter = require('./Counter');
-var Counter = require('./Dailycounter');
+var Daily_Counter = require('./Dailycounter');
 
 // schema
 var postSchema = mongoose.Schema({
@@ -51,7 +51,8 @@ var postSchema = mongoose.Schema({
     required: [true, 'Section is required!']
   },
   code: {
-    type: String
+    type: String,
+    unique:true
   },
   sender_dept: {
     type: String,
@@ -67,6 +68,9 @@ var postSchema = mongoose.Schema({
   }
   //mailist//
 });
+
+
+
 
 
 postSchema.pre('save', async function(next) {
@@ -85,10 +89,7 @@ postSchema.pre('save', async function(next) {
     counter.count++;
     counter.save();
     post.numId = counter.count;
-  }
 
-
-  if (post.isNew) {
 
     // comparing today and temp => new article number
 
@@ -99,6 +100,10 @@ postSchema.pre('save', async function(next) {
 
     today = yyyy + mm + dd;
 
+
+
+    //daily_counter starts ------------------------->
+
     daily_counter = await Daily_Counter.findOne({
       name: 'posts'
     }).exec();
@@ -107,21 +112,21 @@ postSchema.pre('save', async function(next) {
       name: 'posts'
     });
 
+    daily_counter.today = today;
+
 
 
     if (daily_counter.today === daily_counter.temp) {
-      daily_counter.count++;
+      daily_counter.count = daily_counter.count + 1;
       daily_counter.save();
-      post.numId_daily = today + "-"
-      daily_counter.count;
+      post.numId_daily = today + "-" + daily_counter.count;
     } else {
       daily_counter.count = 1;
+
+      post.numId_daily = today + "-" + daily_counter.count;
+      daily_counter.temp = today;
       daily_counter.save();
 
-      post.numId_daily = today + "-";
-      daily_counter.count;
-
-      daily_counter.temp = Date.now;
     }
   }
 

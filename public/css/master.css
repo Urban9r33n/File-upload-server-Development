@@ -130,14 +130,36 @@ body {
   text-overflow: ellipsis;
 }
 
+.board-table .title {
+  text-align: center;
+}
+
 .board-table {
   table-layout: fixed;
 }
-.board-table .numId,
-.board-table .views{
+.board-table .numId{
+  width: 40px;
+  text-align: center;
+}
+
+.board-table .nation,
+.board-table .enterprise,
+.board-table .sender
+{
   width: 60px;
   text-align: center;
 }
+
+.board-table .numId_daily{
+  width: 100px;
+  text-align: center;
+}
+
+.board-table .code {
+  width: 140px;
+  text-align: center;
+}
+
 .board-table .author,
 .board-table .date {
   width: 100px;

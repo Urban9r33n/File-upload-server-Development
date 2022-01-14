@@ -112,7 +112,7 @@
           </div>
         </div>
         <div class="col-md-10">
-          <input type="text" id="code" name="code" value="<%= post.code %>" placeholder="CODE" class="form-control box <%= (errors.code)?'is-invalid':'' %>">
+          <input type="text" id="code" autocomplete="off" name="code" value="<%= post.code %>" placeholder="CODE" class="form-control box <%= (errors.code)?'is-invalid':'' %>">
         </div>
         <% if(errors.code){ %>
         <span class="invalid-feedback"><%= errors.code.message %></span>
@@ -129,7 +129,7 @@
         </div>
 
         <div class="col-md-10">
-          <input type="text" id="title" name="title" value="<%= post.title %>" placeholder="메일제목" class="form-control <%= (errors.title)?'is-invalid':'' %>">
+          <input type="text" id="title" autocomplete="off"  name="title" value="<%= post.title %>" placeholder="메일제목" class="form-control <%= (errors.title)?'is-invalid':'' %>">
         </div>
         <% if(errors.title){ %>
         <span class="invalid-feedback"><%= errors.title.message %></span>
@@ -146,7 +146,7 @@
         </div>
 
         <div class="col-md-10">
-          <input type=sender_dept" id="sender_dept" name="sender_dept" placeholder="부서" value="<%= post.sender_dept %>" class="form-control <%= (errors.sender_dept)?'is-invalid':'' %>">
+          <input type=sender_dept" id="sender_dept" autocomplete="off"  name="sender_dept" placeholder="부서" value="<%= post.sender_dept %>" class="form-control <%= (errors.sender_dept)?'is-invalid':'' %>">
         </div>
         <% if(errors.sender_dept){ %>
         <span class="invalid-feedback"><%= errors.sender_dept.message %></span>
@@ -163,7 +163,7 @@
         </div>
 
         <div class="col-md-10">
-          <input type="text" id="sender" name="sender" placeholder="보낸이" value="<%= post.sender %>" class="form-control <%= (errors.sender)?'is-invalid':'' %>">
+          <input type="text" id="sender" autocomplete="off"  name="sender" placeholder="보낸이" value="<%= post.sender %>" class="form-control <%= (errors.sender)?'is-invalid':'' %>">
         </div>
         <% if(errors.sender){ %>
         <span class="invalid-feedback"><%= errors.sender.message %></span>
@@ -243,11 +243,22 @@
         </div>
       </div>
 
-      <% if(errors.unhandled){ %>
-      <div class="invalid-feedback d-block">
-        <%= errors.unhandled %>
+      <% if(errors.unhandled) {%>
+      <% if(errors.unhandled.substr(18, 5) === "11000"){ %>
+      <div class="alert alert-danger" role="alert" style="margin-top: 1%;">
+        Warning: 이미 등록된 CODE 입니다!
       </div>
+
+      <%} else {%>
+      <div class="alert alert-danger invalid-feedback d-block" role="alert" style="margin-top: 1%;">
+        에러: <%= errors.unhandled.substr(2) %> 관리자에게 문의하세요.
+      </div>
+      <% }%>
       <% } %>
+
+
+
+
 
 
 

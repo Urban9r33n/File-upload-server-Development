@@ -10,11 +10,11 @@ var daily_counterSchema = mongoose.Schema({
     default: 0
   },
   today: {
-    type: Date,
-    default: Date.now
+    type: String,
   },
   temp: {
-    type: Date,
+    type: String,
+    default:"20220114"
   },
 });
 
