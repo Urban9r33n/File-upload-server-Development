@@ -1,116 +1,273 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <%- include('../partials/head') %>
 
-    <!-- 글쓰기 에디터 -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<head>
+  <%- include('../partials/head') %>
 
-  </head>
-  <body>
-    <%- include('../partials/nav') %>
+  <!-- 글쓰기 에디터 -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
-    <div class="container mb-3">
+</head>
 
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb p-1 pl-2 pr-2">
-          <li class="breadcrumb-item"><a href="/">Home</a></li>
-          <li class="breadcrumb-item"><a href="/posts">Board</a></li>
-          <li class="breadcrumb-item"><a href="/posts/<%= post._id %>"><%= post.title %></a></li>
-          <li class="breadcrumb-item active" aria-current="page">Edit Post</li>
-        </ol>
-      </nav>
+<body>
+  <%- include('../partials/nav') %>
 
-      <form action="/posts/<%= post._id %>?_method=put<%= getPostQueryString(true) %>" enctype="multipart/form-data" method="post">
+  <div class="container mb-3">
 
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input type="text" id="title" name="title" value="<%= post.title %>" class="form-control <%= (errors.title)?'is-invalid':'' %>">
-          <% if(errors.title){ %>
-            <span class="invalid-feedback"><%= errors.title.message %></span>
-          <% } %>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb p-1 pl-2 pr-2">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/posts">Board</a></li>
+        <li class="breadcrumb-item"><a href="/posts/<%= post._id %>"><%= post.title %></a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit Post</li>
+      </ol>
+    </nav>
+
+    <form action="/posts/<%= post._id %>?_method=put<%= getPostQueryString(true) %>" enctype="multipart/form-data" method="post">
+
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="nation">접수 국가</label>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="title">Attachment</label>
+        <div class="col-md-10">
+          <select class="form-control" id="nation" name="nation" value="<%= post.nation %>" <%= (errors.nation)?'is-invalid':'' %>">
+              <option value="<%= post.nation %>" selected disabled hidden><%= post.nation %></option>
+            <option value="한국">한국</option>
+            <option value="중국">중국</option>
+            <option value="일본">일본</option>
+          </select>
+        </div>
+        <% if(errors.team){ %>
+        <span class="invalid-feedback"><%= errors.nation.message %></span>
+        <% } %>
+      </div>
 
-          <input type="hidden" id="attachment" name="attachment" value="<%= post.attachment?post.attachment._id:'' %>">
 
-          <% if(post.attachment){ %>
-            <div class="input-group mb-3" id="currentAttachemnt">
+      <!-- enterprise -->
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="enterprise">업체</label>
+          </div>
+        </div>
+
+        <div class="col-md-10">
+          <select class="form-control" id="enterprise" name="enterprise" value="<%= post.enterprise %>" <%= (errors.enterprise)?'is-invalid':'' %>">
+            <option value="<%= post.enterprise %>" selected disabled hidden><%= post.enterprise %></option>
+            <option value="LCD">LCD</option>
+            <option value="VD">VD</option>
+            <option value="SMD">SMD</option>
+            <option value="LGD">LGD</option>
+            <option value="BOE">BOE</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+
+        <% if(errors.enterprise){ %>
+        <span class="invalid-feedback"><%= errors.enterprise.message %></span>
+        <% } %>
+      </div>
+
+
+      <!-- section -->
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group ">
+
+            <label for="section">내용 구분</label></label>
+          </div>
+        </div>
+        <div class="col-md-10">
+          <select class="form-control" id="section" name="section" value="<%= post.section %>" <%= (errors.section)?'is-invalid':'' %>">
+            <option value="<%= post.section %>" selected disabled hidden><%= post.section %></option>
+            <option value="개발">개발</option>
+            <option value="생산">생산</option>
+            <option value="양산">양산</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+
+        <% if(errors.section){ %>
+        <span class="invalid-feedback"><%= errors.section.message %></span>
+        <% } %>
+
+      </div>
+
+
+
+      <!-- code -->
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="CODE">CODE</label>
+          </div>
+        </div>
+        <div class="col-md-10">
+          <input type="text" id="code" autocomplete="off" name="code" value="<%= post.code %>" placeholder="CODE" class="form-control box <%= (errors.code)?'is-invalid':'' %>">
+        </div>
+        <% if(errors.code){ %>
+        <span class="invalid-feedback"><%= errors.code.message %></span>
+        <% } %>
+      </div>
+
+
+      <!-- title -->
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="title">메일 제목</label>
+          </div>
+        </div>
+
+        <div class="col-md-10">
+          <input type="text" id="title" autocomplete="off" name="title" value="<%= post.title %>" placeholder="메일제목" class="form-control <%= (errors.title)?'is-invalid':'' %>">
+        </div>
+        <% if(errors.title){ %>
+        <span class="invalid-feedback"><%= errors.title.message %></span>
+        <% } %>
+      </div>
+
+
+      <!-- sender_dept -->
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="sender_dept">부서</label>
+          </div>
+        </div>
+
+        <div class="col-md-10">
+          <input type=sender_dept" id="sender_dept" autocomplete="off" name="sender_dept" placeholder="부서" value="<%= post.sender_dept %>" class="form-control <%= (errors.sender_dept)?'is-invalid':'' %>">
+        </div>
+        <% if(errors.sender_dept){ %>
+        <span class="invalid-feedback"><%= errors.sender_dept.message %></span>
+        <% } %>
+      </div>
+
+
+      <!-- sender -->
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="sender">보낸이</label>
+          </div>
+        </div>
+
+        <div class="col-md-10">
+          <input type="text" id="sender" autocomplete="off" name="sender" placeholder="보낸이" value="<%= post.sender %>" class="form-control <%= (errors.sender)?'is-invalid':'' %>">
+        </div>
+        <% if(errors.sender){ %>
+        <span class="invalid-feedback"><%= errors.sender.message %></span>
+        <% } %>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-2">
+          <label for="attachment">첨부파일</label>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <input type="hidden" id="attachment" name="attachment" value="<%= post.attachment?post.attachment._id:'' %>">
+
+
+            <% if(post.attachment){ %>
+            <div class="input-group" id="currentAttachemnt">
               <input type="text" class="form-control" value="<%= post.attachment.originalFileName %>" readonly />
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="button" onclick="$('#attachment').val('');$('#currentAttachemnt').hide();$('#newAttachment').removeClass('d-none');">Delete</button>
               </div>
             </div>
-          <% } %>
-          <input type="file" id="newAttachment" class="form-control-file <%= post.attachment?'d-none':'' %>" name="newAttachment">
-        </div>
-
-        <div class="form-group">
-          <label for="body">Body</label>
-
-
-
-
-          <!-- <textarea id="body" name="body" rows="5" class="form-control <%= (errors.body)?'is-invalid':'' %>"><%= post.body %></textarea> -->
-
-          <textarea id="summernote" name="body"class="form-control <%= (errors.body)?'is-invalid':'' %>"><%- post.body %></textarea>
-          <script>
-            $(document).ready(function() {
-              $('#summernote').summernote({
-                height: 500,
-                minHeight: 500,
-                maxHeight: 500,
-                focus: true,
-                lang: "ko-KR",
-                placeholder: '내용을 입력해주세요.',
-                toolbar: [
-                  ['fontname', ['fontname']],
-                  ['fontsize', ['fontsize']],
-                  ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
-                  ['color', ['forecolor', 'color']],
-                  ['table', ['table']],
-                  ['para', ['ul', 'ol', 'paragraph']],
-                  ['height', ['height']],
-                  ['insert', ['link']],
-                  ['view', ['fullscreen', 'help']]
-                ],
-                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', '맑은 고딕', '궁서', '굴림체',
-                  '굴림', '돋음체', '바탕체'
-                ],
-                fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36',
-                  '50', '72'
-                ]
-              });
-            });
-          </script>
-        </div>
-
-
-
-
-
-          <% if(errors.body){ %>
-            <span class="invalid-feedback"><%= errors.body.message %></span>
-          <% } %>
-        </div>
-
-        <% if(errors.unhandled){ %>
-          <div class="invalid-feedback b-block">
-            <%= errors.unhandled %>
+            <% } %>
+            <input type="file" id="newAttachment" class="form-control-file <%= post.attachment?'d-none':'' %>" name="newAttachment">
           </div>
-        <% } %>
-
-        <div>
-          <a class="btn btn-primary" href="/posts/<%= post._id %><%= getPostQueryString() %>">Back</a>
-          <button type="submit" class="btn btn-primary">Submit</button>
         </div>
+        <!-- private check -->
+        <div class="col-md-6">
+          <input class="form-check-input" checked="checked" type="checkbox" name="private_check" value="true" id="private_check">
+          <label class="form-check-label" for="private_check">
+            보안기능(대외비) - 체크시 일부 권한자만 게시물 확인 가능
+          </label>
+        </div>
+      </div>
 
-      </form>
 
-    </div>
-  </body>
+
+      <div class="form-group">
+        <label for="body">Body</label>
+
+
+
+        <!-- <textarea id="body" name="body" rows="5" class="form-control <%= (errors.body)?'is-invalid':'' %>"><%= post.body %></textarea> -->
+
+        <textarea id="summernote" name="body" class="form-control <%= (errors.body)?'is-invalid':'' %>"><%- post.body %></textarea>
+        <script>
+          $(document).ready(function() {
+            $('#summernote').summernote({
+              height: 500,
+              minHeight: 500,
+              maxHeight: 500,
+              focus: true,
+              lang: "ko-KR",
+              placeholder: '내용을 입력해주세요.',
+              toolbar: [
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                ['color', ['forecolor', 'color']],
+                ['table', ['table']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['insert', ['link']],
+                ['view', ['fullscreen', 'help']]
+              ],
+              fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', '맑은 고딕', '궁서', '굴림체',
+                '굴림', '돋음체', '바탕체'
+              ],
+              fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36',
+                '50', '72'
+              ]
+            });
+          });
+        </script>
+      </div>
+
+
+
+
+      <% if(errors.body){ %>
+      <span class="invalid-feedback"><%= errors.body.message %></span>
+      <% } %>
+
+      <div>
+        <a class="btn btn-dark" href="/posts<%= getPostQueryString() %>">Back</a>
+        <button type="submit" class="btn btn-dark">Submit</button>
+      </div>
+  </div>
+  </div>
+
+  <% if(errors.unhandled) {%>
+  <% if(errors.unhandled.substr(18, 5) === "11000"){ %>
+  <div class="alert alert-danger" role="alert" style="margin-top: 1%;">
+    Warning: 이미 등록된 CODE 입니다!
+  </div>
+
+  <%} else {%>
+  <div class="alert alert-danger invalid-feedback d-block" role="alert" style="margin-top: 1%;">
+    에러: <%= errors.unhandled.substr(2) %> 관리자에게 문의하세요.
+  </div>
+  <% }%>
+  <% } %>
+
+  </form>
+
+  </div>
+</body>
+
 </html>

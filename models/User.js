@@ -32,6 +32,12 @@ var userSchema = mongoose.Schema({
     match:[/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,'Should be a vaild email address!'],
     trim:true
   }
+  ,
+  auth:{
+    type:String,
+    trim:true,
+    default:0
+  }
 },{
   toObject:{virtuals:true}
 });

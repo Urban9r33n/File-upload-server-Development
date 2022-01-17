@@ -64,7 +64,7 @@ $(function() {
         var decodedSearchText = params.searchText.replace(/\+/g, ' ');
         decodedSearchText = decodeURI(decodedSearchText);
 
-        var regex = new RegExp(`(${decodedSearchText})`, 'ig');
+        var regex = new RegExp('(${decodedSearchText})', 'ig');
         $element.html($element.html().replace(regex, '<span class="highlighted">$1</span>'));
       }
     });

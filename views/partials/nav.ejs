@@ -1,7 +1,6 @@
 <nav class="navbar navbar-expand-sm navbar-light bg-light mb-3">
 
 
-
   <div class="container">
     <img class="inzi logo2" src="/image/INZI_logo4.png" alt="INZI logo" style="width: 6%; margin-right: 2%;">
 
@@ -24,6 +23,9 @@
       </ul>
       <ul class="navbar-nav ml-auto">
         <% if(isAuthenticated){ %>
+        <% if(currentUser.auth === '3'){ %>
+        <li class="nav-item"><a href="/administrator_page" class="nav-link">관리자</a></li>
+        <% } %>
         <!-- <li class="nav-item"><a href="/users/<%= currentUser.username %>" class="nav-link">계정 관리</a></li> -->
         <li class="nav-item"><a href="/logout" class="nav-link">로그아웃</a></li>
         <% } else { %>
@@ -53,16 +55,96 @@
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item"> <a href="/main" class="left_nav nav-link active" aria-current="page"> <i class="fa fa-home"></i><span class="ms-2"> Home</span> </a> </li>
         <li> <a href="/posts" class="left_nav nav-link text-white"> <i class="fa fa-database"></i><span class="ms-2"> VDX_SERVER</span> </a> </li>
+
+
+
+        <ul class="list-unstyled ps-0">
+          <li class="mb-1">
+            <a href="#" class="left_nav nav-link text-white collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+              <i class="fa fa-filter" aria-hidden="true"></i> Filters</a>
+
+            <div class="collapse" id="home-collapse" style="">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                <li><a href="#" class="link-dark rounded collapsed" data-bs-toggle="collapse" data-bs-target="#nation-collapse" aria-expanded="false" style="margin-left: 35px;">국가별</a></li>
+                <div class="collapse" id="nation-collapse" style="">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                    <li><a href="/posts?limit=10&searchType=nation&searchText=한국" class="link-dark rounded" style="margin-left: 45px;">한국</a></li>
+                    <li><a href="/posts?limit=10&searchType=nation&searchText=중국" class="link-dark rounded" style="margin-left: 45px;">중국</a></li>
+                    <li><a href="/posts?limit=10&searchType=nation&searchText=일본" class="link-dark rounded" style="margin-left: 45px;">일본</a></li>
+                  </ul>
+                </div>
+
+
+
+
+                <li><a href="#" class="link-dark rounded collapsed" data-bs-toggle="collapse" data-bs-target="#enterprise-collapse" aria-expanded="false" style="margin-left: 35px;">고객사별</a></li>
+                <div class="collapse" id="enterprise-collapse" style="">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                    <li><a href="/posts?limit=10&searchType=enterprise&searchText=LCD" class="link-dark rounded" style="margin-left: 45px;">LCD</a></li>
+                    <li><a href="/posts?limit=10&searchType=enterprise&searchText=VD" class="link-dark rounded" style="margin-left: 45px;">VD</a></li>
+                    <li><a href="/posts?limit=10&searchType=enterprise&searchText=SMD" class="link-dark rounded" style="margin-left: 45px;">SMD</a></li>
+                  </ul>
+                </div>
+
+
+              </ul>
+            </div>
+          </li>
+
+        </ul>
+
+
         <li> <a href="/posts/new" class="left_nav nav-link text-white"> <i class="fa fa-pencil"></i><span class="ms-2"> 새 글 쓰기</span> </a> </li>
         <li> <a href="/users/<%= currentUser.username %>" class="left_nav nav-link text-white"> <i class="fa fa-cog"></i><span class="ms-2"> Settings</span> </a> </li>
+
+        <% if(currentUser.auth === '3'){ %>
+        <ul class="list-unstyled ps-0">
+          <li class="mb-1">
+            <a href="#" class="left_nav nav-link text-white collapsed" data-bs-toggle="collapse" data-bs-target="#admin-collapse" aria-expanded="false">
+              <i class="fa fa-lock" aria-hidden="true"></i> Admin</a>
+
+            <div class="collapse" id="admin-collapse" style="">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                <li><a href="#" class="link-dark rounded collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false" style="margin-left: 35px;">계정설정</a></li>
+                <div class="collapse" id="account-collapse" style="">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                    <li><a href="" class="link-dark rounded" style="margin-left: 45px;">새 가입자</a></li>
+                    <li><a href="" class="link-dark rounded" style="margin-left: 45px;">회원정보 수정</a></li>
+                    <!-- <li><a href="" class="link-dark rounded" style="margin-left: 45px;">메일리스트 수정</a></li> -->
+                  </ul>
+                </div>
+
+                <li><a href="#" class="link-dark rounded collapsed" data-bs-toggle="collapse" data-bs-target="#etc-collapse" aria-expanded="false" style="margin-left: 35px;">etc</a></li>
+                <div class="collapse" id="etc-collapse" style="">
+                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                    <li><a href="" class="link-dark rounded" style="margin-left: 45px;">메일링 그룹 설정</a></li>
+                    <!-- <li><a href="" class="link-dark rounded" style="margin-left: 45px;">VD</a></li> -->
+
+                  </ul>
+                </div>
+
+
+              </ul>
+            </div>
+          </li>
+
+        </ul>
+
+        <% } %>
+
+
 
       </ul>
       <hr>
       <div class="dropdown"> <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
           <strong> 안녕하세요! <%=currentUser.name %>님!</strong>
+
           <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
             <li><a class="dropdown-item" href="/posts/new">새 글 쓰기</a></li>
             <li><a class="dropdown-item" href="/users/<%= currentUser.username %>">계정관리</a></li>
+            <% if(currentUser.auth === '3'){ %>
+            <li><a class="dropdown-item" href="/administrator_page" class="nav-link">관리자 페이지</a></li>
+            <% } %>
             <!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->
             <li>
               <hr class="dropdown-divider">
@@ -75,7 +157,13 @@
 </div>
 
 <div id="main">
-
-  <button class="openbtn" onclick="openNav()">&#9776; </button>
-
+  <button class="openbtn" onclick="openNav();">&#9776; </button>
 </div>
+
+<% if(currentUser.auth === '0'){ %>
+res.send(
+<script>
+  alert("아직 활성화 되지 않은 계정입니다. 관리자에게 문의하세요.");
+  location.href = '/logout';
+</script>
+<%  }%>

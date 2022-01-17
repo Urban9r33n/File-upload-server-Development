@@ -98,7 +98,7 @@ postSchema.pre('save', async function(next) {
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
 
-    today = yyyy + mm + dd;
+    today = String(yyyy + mm + dd);
 
 
 
@@ -119,11 +119,11 @@ postSchema.pre('save', async function(next) {
     if (daily_counter.today === daily_counter.temp) {
       daily_counter.count = daily_counter.count + 1;
       daily_counter.save();
-      post.numId_daily = today + "-" + daily_counter.count;
+      post.numId_daily = String(today + "-" + daily_counter.count);
     } else {
       daily_counter.count = 1;
 
-      post.numId_daily = today + "-" + daily_counter.count;
+      post.numId_daily = String(today + "-" + daily_counter.count);
       daily_counter.temp = today;
       daily_counter.save();
 

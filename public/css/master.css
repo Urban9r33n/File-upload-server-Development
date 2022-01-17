@@ -3,12 +3,19 @@
 
 
 
+
+
+.page-item.active .page-link {
+  background-color: #000000;
+  border-color: #000000;
+}
+
 .bd {
-    background-color: #eee;
-    height: 100vh;
-    position:absolute;
-    z-index: 2;
-    top:0;
+  background-color: #eee;
+  height: 100vh;
+  position: absolute;
+  z-index: 2;
+  top: 0;
 }
 
 .c-r {
@@ -18,43 +25,44 @@
 
 .cards {
   width: 100%;
-  margin:1%;
+  margin: 1%;
 }
 
-
 .left_nav:hover {
-    background-color: #525252;
+  background-color: #525252;
 }
 
 .nav-link .fa {
-    transition: all 1s
+  transition: all 1s
 }
-
 
 .nav-link:hover .fa {
-    transform: rotate(360deg)
+  transform: rotate(360deg)
 }
-
-
-
 
 /* The sidebar menu */
 .sidebar {
-  height: 100%; /* 100% Full-height */
-  width: 0; /* 0 width - change this with JavaScript */
-  position: fixed; /* Stay in place */
-  z-index: 2; /* Stay on top */
+  height: 100%;
+  /* 100% Full-height */
+  width: 0;
+  /* 0 width - change this with JavaScript */
+  position: fixed;
+  /* Stay in place */
+  z-index: 2;
+  /* Stay on top */
   top: 0;
   left: 0;
-  background-color: #111; /* Black*/
-  overflow-x: hidden; /* Disable horizontal scroll */
-  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+  background-color: #111;
+  /* Black*/
+  overflow-x: hidden;
+  /* Disable horizontal scroll */
+  transition: 0.5s;
+  /* 0.5 second transition effect to slide in the sidebar */
 }
 
 /* The sidebar links */
 .sidebar a {
   text-decoration: none;
-
   color: #818181;
   display: block;
   transition: 0.3s;
@@ -71,22 +79,17 @@
   top: 0;
   right: 25px;
   font-size: 50px;
-
   margin-left: 50px;
 }
 
-
 /* The button used to open the sidebar */
 .openbtn {
-
   z-index: 3;
   font-size: 30px;
   cursor: pointer;
   background-color: #111;
   color: white;
-
   border: none;
-
 }
 
 .openbtn:hover {
@@ -95,34 +98,36 @@
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
-  transition: margin-left .5s; /* If you want a transition effect */
+  transition: margin-left .5s;
+  /* If you want a transition effect */
   position: absolute;
   bottom: 0;
   left: 0;
   padding: 1%;
-
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
-  .sidebar {padding-top: 15px;}
-  .sidebar a {font-size: 18px;}
+  .sidebar {
+    padding-top: 15px;
+  }
+
+  .sidebar a {
+    font-size: 18px;
+  }
 }
-
-
-
-
-
 
 /* ----- */
 body {
   font-family: 'Open Sans', sans-serif;
-
+  font-size: 14px;
 }
+
 .breadcrumb-item {
   font-size: 0.8em !important;
 }
-.ellipsis{
+
+.ellipsis {
   display: block;
   width: 100%;
   white-space: nowrap;
@@ -132,31 +137,43 @@ body {
 
 .board-table .title {
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .board-table {
   table-layout: fixed;
 }
-.board-table .numId{
-  width: 40px;
+
+.board-table .numId {
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-align: center;
 }
 
 .board-table .nation,
 .board-table .enterprise,
-.board-table .sender
-{
+.board-table .sender {
   width: 60px;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.board-table .numId_daily{
+.board-table .numId_daily {
   width: 100px;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .board-table .code {
-  width: 140px;
+  width: 190px;
   text-align: center;
 }
 
@@ -165,10 +182,10 @@ body {
   width: 100px;
   text-align: center;
 }
+
 .board-table .title-container:hover .title-comments,
 .board-table .title-container:hover .title-text,
-.board-table .title-container:hover .title-attachment
-{
+.board-table .title-container:hover .title-attachment {
   text-decoration: underline;
 }
 
@@ -176,7 +193,8 @@ body {
 .comment-text {
   white-space: pre-line;
 }
-.post-info{
+
+.post-info {
   font-size: 0.8em;
 }
 
@@ -187,7 +205,8 @@ body {
 .post-index-tool {
   max-width: 450px;
 }
-.post-index-tool input[type='text']{
+
+.post-index-tool input[type='text'] {
   max-width: 130px;
 }
 
@@ -198,14 +217,13 @@ body {
 .comment-edit,
 .comment-reply,
 .comment-edit-enabled .comment-show {
-  display:none;
+  display: none;
 }
 
 .comment-edit-enabled .comment-edit,
 .comment-reply-enabled .comment-reply {
-  display:inherit;
+  display: inherit;
 }
-
 
 h1 {
   font-family: 'Nanum Gothic';

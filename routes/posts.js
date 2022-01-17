@@ -83,7 +83,7 @@ router.get('/', util.isLoggedin, async function(req, res) {
           nation: 1,
           enterprise: 1,
           code: 1,
-          sender:1,
+          sender: 1,
           attachment: {
             $cond: [{
               $and: ['$attachment', {
@@ -162,13 +162,14 @@ router.get('/:id', util.isLoggedin, function(req, res) {
         _id: req.params.id
       }).populate({
         path: 'author',
-        select: 'username'
+        select: ['username', 'email']
       }).populate({
         path: 'attachment',
         match: {
           isDeleted: false
         }
       }),
+
       Comment.find({
         post: req.params.id
       }).sort('createdAt').populate({
@@ -275,11 +276,17 @@ function checkPermission(req, res, next) {
   });
 }
 
+
+//for searching
 async function createSearchQuery(queries) {
   var searchQuery = {};
-  if (queries.searchType && queries.searchText && queries.searchText.length >= 3) {
+  if (queries.searchType && queries.searchText && queries.searchText.length >= 0) {
     var searchTypes = queries.searchType.toLowerCase().split(',');
     var postQueries = [];
+
+
+
+
     if (searchTypes.indexOf('title') >= 0) {
       postQueries.push({
         title: {
@@ -287,6 +294,9 @@ async function createSearchQuery(queries) {
         }
       });
     }
+
+
+
     if (searchTypes.indexOf('body') >= 0) {
       postQueries.push({
         body: {
@@ -294,6 +304,9 @@ async function createSearchQuery(queries) {
         }
       });
     }
+
+
+
     if (searchTypes.indexOf('author!') >= 0) {
       var user = await User.findOne({
         username: queries.searchText
@@ -317,10 +330,88 @@ async function createSearchQuery(queries) {
         }
       });
     }
+
+    if (searchTypes.indexOf('nation') >= 0) {
+      postQueries.push({
+        nation: {
+          $regex: new RegExp(queries.searchText, 'i')
+        }
+      });
+    }
+
+    if (searchTypes.indexOf('nation') >= 0) {
+      postQueries.push({
+        nation: {
+          $regex: new RegExp(queries.searchText, 'i')
+        }
+      });
+    }
+
+
+    if (searchTypes.indexOf('enterprise') >= 0) {
+      postQueries.push({
+        enterprise: {
+          $regex: new RegExp(queries.searchText, 'i')
+        }
+      });
+    }
+
+    if (searchTypes.indexOf('section') >= 0) {
+      postQueries.push({
+        section: {
+          $regex: new RegExp(queries.searchText, 'i')
+        }
+      });
+    }
+
+    if (searchTypes.indexOf('code') >= 0) {
+      postQueries.push({
+        code: {
+          $regex: new RegExp(queries.searchText, 'i')
+        }
+      });
+    }
+
+    if (searchTypes.indexOf('sender_dept') >= 0) {
+      postQueries.push({
+        sender_dept: {
+          $regex: new RegExp(queries.searchText, 'i')
+        }
+      });
+    }
+
+    if (searchTypes.indexOf('sender') >= 0) {
+      postQueries.push({
+        sender: {
+          $regex: new RegExp(queries.searchText, 'i')
+        }
+      });
+    }
+
+    // if (searchTypes.indexOf('numId_daily') >= 0) {
+    //   postQueries.push({
+    //     numId_daily: {
+    //       $regex: new RegExp(queries.searchText, 'i')
+    //     }
+    //   });
+    // }
+    //
+    //
+
+
+
+
+
+
+
+
     if (postQueries.length > 0) searchQuery = {
       $or: postQueries
     };
     else searchQuery = null;
+
+
+
   }
   return searchQuery;
 }

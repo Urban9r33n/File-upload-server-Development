@@ -3,6 +3,7 @@
 
 <head>
   <%- include('../partials/head') %>
+  <script src="https://kit.fontawesome.com/3573fc872a.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -44,15 +45,17 @@
           <td class="sender"><%= post.sender %></td>
           <td class="title">
             <a href="/posts/<%= post._id %><%= getPostQueryString() %>" class="title-container">
+
               <div data-search-highlight="title" class="title-ellipsis ellipsis float-left">
+                <% if(post.attachment){ %>
+                <i class="fas fa-save"></i>
+                <% } %>
                 <span class="title-text"><%= post.title %></span>
+                <% if(post.commentCount){ %>
+                (<%= post.commentCount %>)
+                <% } %>
               </div>
-              <% if(post.commentCount){ %>
-              <small class="title-comments d-inline-block pl-2">(<%= post.commentCount %>)</small>
-              <% } %>
-              <% if(post.attachment){ %>
-              <small class="title-attachment d-inline-block pl-2">📁</small>
-              <% } %>
+
             </a>
           </td>
 
@@ -74,7 +77,7 @@
 
       <div class="col-2">
         <% if(isAuthenticated){ %>
-        <a class="btn btn-primary" href="/posts/new<%= getPostQueryString() %>">New</a>
+        <a class="btn btn-dark" href="/posts/new<%= getPostQueryString() %>">New</a>
         <% } %>
       </div>
 
@@ -120,14 +123,19 @@
           <div class="input-group">
             <select name="searchType" class="custom-select">
               <option value="title,body" <%= searchType=='title,body'?'selected':'' %>>제목, 본문</option>
-              <option value="nation" <%= searchType=='nation'?'selected':'' %>>국가</option>
               <option value="title" <%= searchType=='title'?'selected':'' %>>제목</option>
               <option value="body" <%= searchType=='body'?'selected':'' %>>본문</option>
               <option value="author" <%= searchType=='author'?'selected':'' %>>Author</option>
+              <option value="nation" <%= searchType=='nation'?'selected':'' %>>국가</option>
+              <option value="enterprise" <%= searchType=='enterprise'?'selected':'' %>>고객사</option>
+              <option value="section" <%= searchType=='section'?'selected':'' %>>내용구분</option>
+              <option value="code" <%= searchType=='code'?'selected':'' %>>CODE</option>
+              <option value="sender_dept" <%= searchType=='sender_dept'?'selected':'' %>>보낸이 부서</option>
+              <!-- <option value="numId_daily" <%= searchType=='numId_daily'?'selected':'' %>>접수번호</option> -->
             </select>
-            <input minLength="2" type="text" name="searchText" value="<%= searchText %>">
+            <input minLength="1" type="text" name="searchText" value="<%= searchText %>">
             <div class="input-group-append">
-              <button class="btn btn-outline-primary" type="submit">Search</button>
+              <button class="btn btn-outline-dark" type="submit">Search</button>
             </div>
           </div>
         </div>
