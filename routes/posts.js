@@ -87,6 +87,7 @@ router.get('/', util.isLoggedin, async function(req, res) {
           enterprise: 1,
           code: 1,
           sender: 1,
+          private_check: 1,
           attachment: {
             $cond: [{
               $and: ['$attachment', {
@@ -149,7 +150,7 @@ router.post('/', util.isLoggedin, upload.single('attachment'), async function(re
 });
 
 // show
-router.get('/:id', util.isLoggedin, function(req, res) {
+router.get('/:id', util.isLoggedin, checkreadPermission, function(req, res) {
   var commentForm = req.flash('commentForm')[0] || {
     _id: null,
     form: {}
@@ -273,10 +274,27 @@ function checkPermission(req, res, next) {
     _id: req.params.id
   }, function(err, post) {
     if (err) return res.json(err);
-    if (post.author != req.user.id) return util.noPermission(req, res);
+    if ((post.author != req.user.id) && (req.user.auth != 3)) return util.noPermission(req, res);
 
     next();
   });
+}
+
+function checkreadPermission(req, res, next) {
+  Post.findOne({
+    _id: req.params.id
+  }, function(err, post) {
+    if (err) return res.json(err);
+    if (post.private_check) {
+      if (req.user.auth != 3 && req.user.auth != 2) {
+        return util.noPermission(req, res);
+      }
+    }
+
+
+    next();
+  });
+
 }
 
 

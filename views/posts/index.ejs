@@ -23,7 +23,7 @@
           <th scope="col" class="enterprise">고객사</th>
           <th scope="col" class="code">Code</th>
           <th scope="col" class="sender">보낸이</th>
-          <th scope="col" class="title">메일제목</th>
+          <th scope="col" class="title">메일제목 </th>
           <th scope="col" class="author">Author</th>
           <th scope="col" class="date">Date</th>
         </tr>
@@ -54,7 +54,13 @@
                 <% if(post.commentCount){ %>
                 (<%= post.commentCount %>)
                 <% } %>
+
+                <% if (post.private_check) { %>
+                <i class="fas fa-lock fa-xs"></i>
+                <% } %>
               </div>
+
+
 
             </a>
           </td>

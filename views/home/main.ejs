@@ -15,6 +15,7 @@
   <div class="container mb-3">
     <br />
     <h2><strong> 안녕하세요! <%=currentUser.name %>님!</strong></h2>
+    <hr />
 
     <div class="row c-r">
       <div class="col-md-6">
@@ -35,12 +36,25 @@
       <div class="col-md-6">
         <div class="card text-center cards">
           <div class="card-header">
-            계정 관리
+            <% if(currentUser.auth === '3'){ %>
+            회원 관리
+            <% } else {%>
+            계정관리
+            <% } %>
           </div>
           <div class="card-body ">
-            <h5 class="card-title">계정 설정으로 이동하기</h5>
+            <h5 class="card-title">
+              <% if(currentUser.auth === '3'){ %>
+              회원 관리
+              <% } else {%>
+              계정 관리
+              <% } %> 페이지로 이동하기</h5>
             <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
-            <a href="/users/<%= currentUser.username %>" class="btn btn-dark ">Settings</a>
+            <a href="<% if(currentUser.auth === '3'){ %>
+          /administrator_page
+            <% } else {%>
+          /users/<%= currentUser.username %>
+            <% } %> " class="btn btn-dark ">Settings</a>
           </div>
           <!-- <div class="card-footer text-muted">
     2 days ago
@@ -48,6 +62,42 @@
         </div>
       </div>
     </div>
+
+    <% if(currentUser.auth === '3'){ %>
+    <div class="row c-r">
+      <div class="col-md-6">
+        <div class="card text-center cards">
+          <div class="card-header">
+            VDX_SERVER
+          </div>
+          <div class="card-body ">
+            <h5 class="card-title">회원 승인 관리</h5>
+            <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+            <a href="/administrator_page?limit=10&searchType=auth&searchText=0" class="btn btn-dark">승인 관리</a>
+          </div>
+          <!-- <div class="card-footer text-muted">
+      2 days ago
+    </div> -->
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card text-center cards">
+          <div class="card-header">
+            메일링 리스트
+          </div>
+          <div class="card-body ">
+            <h5 class="card-title">메일링 리스트 관리</h5>
+            <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+            <a href="/users/<%= currentUser.username %>" class="btn btn-dark ">메일링 리스트</a>
+          </div>
+          <!-- <div class="card-footer text-muted">
+      2 days ago
+    </div> -->
+        </div>
+      </div>
+    </div>
+
+    <% } %>
 
 
   </div>

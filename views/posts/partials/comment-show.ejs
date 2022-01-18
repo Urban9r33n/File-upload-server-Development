@@ -24,7 +24,7 @@
           <% if(isAuthenticated){ %>
             <small class="d-block">
               <a href="javascript:void(0)" onclick="$('.comment-reply-enabled').removeClass('comment-reply-enabled'); $('.comment-edit-enabled').removeClass('comment-edit-enabled'); $('#comment-<%= comment._id %>').addClass('comment-reply-enabled')">reply</a>
-              <% if(comment.author && currentUser.id == comment.author.id){ %>
+              <% if(comment.author && (currentUser.id == comment.author.id) || (currentUser.auth == '3')) { %>
                 |
                 <a href="javascript:void(0)" onclick="$('.comment-reply-enabled').removeClass('comment-reply-enabled'); $('.comment-edit-enabled').removeClass('comment-edit-enabled'); $('#comment-<%= comment._id %>').addClass('comment-edit-enabled')">Edit</a>
                 |
