@@ -158,6 +158,32 @@ router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, 
 });
 
 
+// router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, next){
+//   User.findOne({username:req.params.username})
+//     .select('username')
+//     .exec(function(err, user){
+//       if(err) return res.json(err);
+//
+//       // update user object
+//       user.originalPassword = user.password;
+//       user.password = req.body.newPassword? req.body.newPassword : user.password;
+//       for(var p in req.body){
+//         user[p] = req.body[p];
+//       }
+//
+//       // save updated user
+//       user.save(function(err, user){
+//         if(err){
+//           req.flash('user', req.body);
+//           req.flash('errors', util.parseError(err));
+//           return res.redirect('/administrator_page/'+req.params.username);
+//         }
+//         res.redirect('/administrator_page/'+user.username);
+//       });
+//   });
+// });
+
+
 // private functions
 //req. ~~ is current user.
 function checkADPermission(req, res, next){
