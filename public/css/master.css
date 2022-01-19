@@ -123,6 +123,10 @@ body {
   font-size: 14px;
 }
 
+.container {
+  max-width: 70%;
+}
+
 .breadcrumb-item {
   font-size: 0.8em !important;
 }
@@ -144,6 +148,7 @@ body {
 
 .board-table {
   table-layout: fixed;
+
 }
 
 .board-table .numId {
@@ -157,7 +162,7 @@ body {
 .board-table .nation,
 .board-table .enterprise,
 .board-table .sender {
-  width: 60px;
+  width: 100px;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;

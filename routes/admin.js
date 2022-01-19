@@ -17,7 +17,7 @@ var passport = require('../config/passport');
 
 
 
-router.get('/', util.isLoggedin, async function(req, res) {
+router.get('/', util.isLoggedin,checkADPermission, async function(req, res) {
   var page = Math.max(1, parseInt(req.query.page));
   var limit = Math.max(1, parseInt(req.query.limit));
 

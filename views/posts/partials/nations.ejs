@@ -1,0 +1,54 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group">
+      <label for="nation">접수 국가</label>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <select class="form-control" id="nation2" name="nation2">
+      <option selected disabled hidden>=== 국가를 선택하세요 ===</option>
+      <option value="한국(KOR)">한국(KOR)</option>
+      <option value="일본(JPN)">일본(JPN)</option>
+      <option value="중국(CHN)">중국(CHN)</option>
+      <option value="베트남(VTN)">베트남(VTN)</option>
+      <option disabled>=== 기타 ===</option>
+      <option value="">직접입력</option>
+    </select>
+
+  </div>
+  
+  <div class="col-md-2">
+    <input class="form-control box <%= (errors.nation)?'is-invalid':'' %>" type="text" name="nation" id="nation" style="width:100%;" disabled value="<%= post.nation %>" placeholder="직접입력">
+  </div>
+
+
+  <script type="text/javascript">
+    $('#nation2').change(function() {
+      $("#nation2 option:selected").each(function() {
+        if ($(this).val() == '') {
+          //직접입력일 경우
+          $("nation").val('');
+          //값 초기화
+          $("#nation").attr("disabled", false);
+          //활성화
+        } else {
+          //직접입력이 아닐경우
+          $("#nation").val($(this).text());
+          //선택값 입력
+          $("#nation").attr("disabled", false);
+          $("#nation").attr("readonly", true);
+          //비활성화
+        }
+
+
+      });
+    });
+  </script>
+
+
+
+  <% if(errors.team){ %>
+  <span class="invalid-feedback"><%= errors.nation.message %></span>
+  <% } %>
+</div>

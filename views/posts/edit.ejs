@@ -27,76 +27,17 @@
 
     <form action="/posts/<%= post._id %>?_method=put<%= getPostQueryString(true) %>" enctype="multipart/form-data" method="post">
 
-      <div class="row">
-        <div class="col-md-2">
-          <div class="form-group">
-            <label for="nation">접수 국가</label>
-          </div>
-        </div>
 
-        <div class="col-md-10">
-          <select class="form-control" id="nation" name="nation" value="<%= post.nation %>" <%= (errors.nation)?'is-invalid':'' %>">
-              <option value="<%= post.nation %>" selected disabled hidden><%= post.nation %></option>
-            <option value="한국">한국</option>
-            <option value="중국">중국</option>
-            <option value="일본">일본</option>
-          </select>
-        </div>
-        <% if(errors.team){ %>
-        <span class="invalid-feedback"><%= errors.nation.message %></span>
-        <% } %>
-      </div>
+      <!-- enterprise -->
+      <%- include('partials/nations') %>
 
 
       <!-- enterprise -->
-      <div class="row">
-        <div class="col-md-2">
-          <div class="form-group">
-            <label for="enterprise">업체</label>
-          </div>
-        </div>
-
-        <div class="col-md-10">
-          <select class="form-control" id="enterprise" name="enterprise" value="<%= post.enterprise %>" <%= (errors.enterprise)?'is-invalid':'' %>">
-            <option value="<%= post.enterprise %>" selected disabled hidden><%= post.enterprise %></option>
-            <option value="LCD">LCD</option>
-            <option value="VD">VD</option>
-            <option value="SMD">SMD</option>
-            <option value="LGD">LGD</option>
-            <option value="BOE">BOE</option>
-            <option value="기타">기타</option>
-          </select>
-        </div>
-
-        <% if(errors.enterprise){ %>
-        <span class="invalid-feedback"><%= errors.enterprise.message %></span>
-        <% } %>
-      </div>
+      <%- include('partials/enterprise') %>
 
 
       <!-- section -->
-      <div class="row">
-        <div class="col-md-2">
-          <div class="form-group ">
-
-            <label for="section">내용 구분</label></label>
-          </div>
-        </div>
-        <div class="col-md-10">
-          <select class="form-control" id="section" name="section" value="<%= post.section %>" <%= (errors.section)?'is-invalid':'' %>">
-            <option value="<%= post.section %>" selected disabled hidden><%= post.section %></option>
-            <option value="개발">개발</option>
-            <option value="생산">생산</option>
-            <option value="양산">양산</option>
-            <option value="기타">기타</option>
-          </select>
-        </div>
-
-        <% if(errors.section){ %>
-        <span class="invalid-feedback"><%= errors.section.message %></span>
-        <% } %>
-
-      </div>
+      <%- include('partials/section') %>
 
 
 

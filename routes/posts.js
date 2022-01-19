@@ -132,6 +132,7 @@ router.post('/', util.isLoggedin, upload.single('attachment'), async function(re
   var attachment = req.file ? await File.createNewInstance(req.file, req.user._id) : undefined;
   req.body.attachment = attachment;
   req.body.author = req.user._id;
+
   Post.create(req.body, function(err, post) {
     if (err) {
       req.flash('post', req.body);
@@ -142,6 +143,8 @@ router.post('/', util.isLoggedin, upload.single('attachment'), async function(re
       attachment.postId = post._id;
       attachment.save();
     }
+
+
     res.redirect('/posts' + res.locals.getPostQueryString(false, {
       page: 1,
       searchText: ''
@@ -237,11 +240,12 @@ router.put('/:id', util.isLoggedin, checkPermission, upload.single('newAttachmen
       isDeleted: false
     }
   });
-  if (post.attachment && (req.file || !req.body.attachment)) {
-    post.attachment.processDelete();
-  }
+
   req.body.attachment = req.file ? await File.createNewInstance(req.file, req.user._id, req.params.id) : post.attachment;
   req.body.updatedAt = Date.now();
+  if (post.enterprise == '1'){
+    post.enterprise = post.enterprise2;
+  }
   Post.findOneAndUpdate({
     _id: req.params.id
   }, req.body, {
@@ -418,12 +422,6 @@ async function createSearchQuery(queries) {
     // }
     //
     //
-
-
-
-
-
-
 
 
     if (postQueries.length > 0) searchQuery = {

@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group ">
+
+      <label for="section">내용 구분</label>
+    </div>
+  </div>
+  <div class="col-md-10">
+    <select class="form-control" id="section" name="section" value="<%= post.section %>" <%= (errors.section)?'is-invalid':'' %>">
+      <option selected disabled hidden>=== 내용 구분 ===</option>
+      <option value="개발">개발</option>
+      <option value="개조">개조</option>
+      <option value="개조(시스템등록)">개조(시스템등록)</option>
+      <option value="수리/수정">수리/수정</option>
+      <option value="검토">검토</option>
+      <option value="견적">견적</option>
+      <option value="품질 사양서">품질 사양서</option>
+      <option value="작업 사양서">작업 사양서</option>
+      <option value="기타">기타</option>
+    </select>
+  </div>
+
+  <% if(errors.section){ %>
+  <span class="invalid-feedback"><%= errors.section.message %></span>
+  <% } %>
+
+</div>

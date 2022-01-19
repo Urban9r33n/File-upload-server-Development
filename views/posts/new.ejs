@@ -5,6 +5,8 @@
 
   <%- include('../partials/head') %>
 
+
+
   <!-- 글쓰기 에디터 -->
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
@@ -30,77 +32,18 @@
     <form action="/posts<%= getPostQueryString() %>" enctype="multipart/form-data" method="post">
 
 
-      <!-- nation -->
-      <div class="row">
-        <div class="col-md-2">
-          <div class="form-group">
-            <label for="nation">접수 국가</label>
-          </div>
-        </div>
+      <!-- nations -->
+      <%- include('partials/nations') %>
 
-        <div class="col-md-10">
-          <select class="form-control" id="nation" name="nation" value="<%= post.nation %>" <%= (errors.nation)?'is-invalid':'' %>">
-            <option selected>--- 국가를 선택하세요 ---</option>
-            <option value="한국">한국</option>
-            <option value="중국">중국</option>
-            <option value="일본">일본</option>
-          </select>
-        </div>
-        <% if(errors.team){ %>
-        <span class="invalid-feedback"><%= errors.nation.message %></span>
-        <% } %>
-      </div>
 
 
       <!-- enterprise -->
-      <div class="row">
-        <div class="col-md-2">
-          <div class="form-group">
-            <label for="enterprise">업체</label>
-          </div>
-        </div>
+      <%- include('partials/enterprise') %>
 
-        <div class="col-md-10">
-          <select class="form-control" id="enterprise" name="enterprise" value="<%= post.enterprise %>" <%= (errors.enterprise)?'is-invalid':'' %>">
-            <option selected>--- 업체를 선택하세요 ---</option>
-            <option value="LCD">LCD</option>
-            <option value="VD">VD</option>
-            <option value="SMD">SMD</option>
-            <option value="LGD">LGD</option>
-            <option value="BOE">BOE</option>
-            <option value="기타">기타</option>
-          </select>
-        </div>
-
-        <% if(errors.enterprise){ %>
-        <span class="invalid-feedback"><%= errors.enterprise.message %></span>
-        <% } %>
-      </div>
 
 
       <!-- section -->
-      <div class="row">
-        <div class="col-md-2">
-          <div class="form-group ">
-
-            <label for="section">내용 구분</label></label>
-          </div>
-        </div>
-        <div class="col-md-10">
-          <select class="form-control" id="section" name="section" value="<%= post.section %>" <%= (errors.section)?'is-invalid':'' %>">
-            <option selected>--- 내용 구분 ---</option>
-            <option value="개발">개발</option>
-            <option value="생산">생산</option>
-            <option value="양산">양산</option>
-            <option value="기타">기타</option>
-          </select>
-        </div>
-
-        <% if(errors.section){ %>
-        <span class="invalid-feedback"><%= errors.section.message %></span>
-        <% } %>
-
-      </div>
+      <%- include('partials/section') %>
 
 
 
@@ -162,13 +105,28 @@
           </div>
         </div>
 
-        <div class="col-md-10">
+        <div class="col-md-4">
           <input type="text" id="sender" autocomplete="off"  name="sender" placeholder="보낸이" value="<%= post.sender %>" class="form-control <%= (errors.sender)?'is-invalid':'' %>">
         </div>
         <% if(errors.sender){ %>
         <span class="invalid-feedback"><%= errors.sender.message %></span>
         <% } %>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="date">수신 날짜</label>
+            <!-- edit에도 추가 필요함 -->
+          </div>
+            </div>
+
+
+        <div class="col-md-4">
+          <input type="date" id="date">
+          </div>
+
       </div>
+
+
 
 
       <!-- attachment -->
@@ -237,8 +195,8 @@
           <% } %>
 
           <div>
-            <a class="btn btn-primary" href="/posts<%= getPostQueryString() %>">Back</a>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <a class="btn btn-dark" href="/posts<%= getPostQueryString() %>">Back</a>
+            <button type="submit" class="btn btn-dark">Submit</button>
           </div>
         </div>
       </div>

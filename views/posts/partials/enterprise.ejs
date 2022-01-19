@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="form-group">
+      <label for="enterprise">업체</label>
+    </div>
+  </div>
+
+
+
+  <div class="col-md-8">
+
+    <select class="form-control" id="enterprise2" name="enterprise2" >
+      <option selected disabled hidden>=== 업체를 선택하세요 ===</option>
+      <option disabled>=== SAMSUNG ===</option>
+      <option value="VD">VD</option>
+      <option value="SCD">SCD</option>
+      <option disabled>=== SONY ===</option>
+      <option value="SONY">SONY</option>
+      <option disabled>=== PANASONIC ===</option>
+      <option value="PANASONIC">PANASONIC</option>
+      <option disabled>=== LG ===</option>
+      <option value="에너지솔루션">에너지솔루션</option>
+      <option disabled>=== 원진 ===</option>
+      <option value="원진">원진</option>
+      <option disabled>=== 기타 ===</option>
+      <option value="">직접입력</option>
+    </select>
+  </div>
+
+
+
+  <div class="col-md-2">
+    <input class="form-control box <%= (errors.enterprise)?'is-invalid':'' %>" type="text" name="enterprise" id="enterprise" style="width:100%;" disabled value="<%= post.enterprise %>" placeholder="직접입력">
+
+  </div>
+
+
+  <script type="text/javascript">
+    $('#enterprise2').change(function() {
+      $("#enterprise2 option:selected").each(function() {
+        if ($(this).val() == '') {
+          //직접입력일 경우
+          $("enterprise").val('');
+          //값 초기화
+          $("#enterprise").attr("disabled", false);
+          //활성화
+        } else {
+          //직접입력이 아닐경우
+          $("#enterprise").val($(this).text());
+          //선택값 입력
+          $("#enterprise").attr("disabled", false);
+          $("#enterprise").attr("readonly", true);
+          //비활성화
+        }
+
+
+      });
+    });
+  </script>
+
+
+
+  <% if(errors.enterprise){ %>
+  <span class="invalid-feedback"><%= errors.enterprise.message %></span>
+  <% } %>
+</div>

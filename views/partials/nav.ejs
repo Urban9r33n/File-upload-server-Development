@@ -22,7 +22,7 @@
         <!-- <li class="nav-item"><a href="/posts" class="nav-link">posts</a></li> -->
       </ul>
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item"><a href="/administrator_page" class="nav-link">보안등급: <%= currentUser.auth %> </a></li>
+        <li class="nav-item"><a href="#" class="nav-link">보안등급: <%= currentUser.auth %> </a></li>
         <% if(isAuthenticated){ %>
         <% if(currentUser.auth === '3'){ %>
         <li class="nav-item"><a href="/administrator_page" class="nav-link">관리자</a></li>
@@ -58,41 +58,8 @@
         <li> <a href="/posts" class="left_nav nav-link text-white"> <i class="fa fa-database"></i><span class="ms-2"> VDX_SERVER</span> </a> </li>
 
 
-
-        <ul class="list-unstyled ps-0">
-          <li class="mb-1">
-            <a href="#" class="left_nav nav-link text-white collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-              <i class="fa fa-filter" aria-hidden="true"></i> Filters</a>
-
-            <div class="collapse" id="home-collapse" style="">
-              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
-                <li><a href="#" class="link-dark rounded collapsed" data-bs-toggle="collapse" data-bs-target="#nation-collapse" aria-expanded="false" style="margin-left: 35px;">국가별</a></li>
-                <div class="collapse" id="nation-collapse" style="">
-                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
-                    <li><a href="/posts?limit=10&searchType=nation&searchText=한국" class="link-dark rounded" style="margin-left: 45px;">한국</a></li>
-                    <li><a href="/posts?limit=10&searchType=nation&searchText=중국" class="link-dark rounded" style="margin-left: 45px;">중국</a></li>
-                    <li><a href="/posts?limit=10&searchType=nation&searchText=일본" class="link-dark rounded" style="margin-left: 45px;">일본</a></li>
-                  </ul>
-                </div>
-
-
-
-
-                <li><a href="#" class="link-dark rounded collapsed" data-bs-toggle="collapse" data-bs-target="#enterprise-collapse" aria-expanded="false" style="margin-left: 35px;">고객사별</a></li>
-                <div class="collapse" id="enterprise-collapse" style="">
-                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
-                    <li><a href="/posts?limit=10&searchType=enterprise&searchText=LCD" class="link-dark rounded" style="margin-left: 45px;">LCD</a></li>
-                    <li><a href="/posts?limit=10&searchType=enterprise&searchText=VD" class="link-dark rounded" style="margin-left: 45px;">VD</a></li>
-                    <li><a href="/posts?limit=10&searchType=enterprise&searchText=SMD" class="link-dark rounded" style="margin-left: 45px;">SMD</a></li>
-                  </ul>
-                </div>
-
-
-              </ul>
-            </div>
-          </li>
-
-        </ul>
+        <!-- navbar filter -->
+        <%- include('navFilters') %>
 
 
         <li> <a href="/posts/new" class="left_nav nav-link text-white"> <i class="fa fa-pencil"></i><span class="ms-2"> 새 글 쓰기</span> </a> </li>

@@ -25,22 +25,8 @@
         <hr></hr>
 
 
-        <div class="form-group row">
-          <label for="username" class="col-sm-3 col-form-label">부서*</label>
-          <div class="col-sm-9">
-            <select class="form-control" id="team" name="team" value="<%= user.team %>" <%= (errors.team)?'is-invalid':'' %>">
-              <option value="<%= user.team %>" selected disabled hidden><%= user.team %></option>
-              <option value="생산">생산</option>
-              <option value="개발">개발</option>
-              <option value="영업">영업</option>
-              <option value="경영">경영</option>
-              <option value="물류">물류</option>
-            </select>
-            <% if(errors.team){ %>
-            <span class="invalid-feedback"><%= errors.team.message %></span>
-            <% } %>
-          </div>
-        </div>
+        <%- include('../partials/teams') %>
+
 
         <div class="form-group row">
           <label for="username" class="col-sm-3 col-form-label">Username(ID)*</label>

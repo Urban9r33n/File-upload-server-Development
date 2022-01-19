@@ -39,22 +39,7 @@
       </hr>
 
 
-      <div class="form-group row">
-        <label for="username" class="col-sm-3 col-form-label">부서*</label>
-        <div class="col-sm-9">
-          <select class="form-control" id="team" name="team" value="<%= user.team %>" <%= (errors.team)?'is-invalid':'' %>">
-            <option value="<%= user.team %>" selected disabled hidden><%= user.team %></option>
-            <option value="생산">생산</option>
-            <option value="개발">개발</option>
-            <option value="영업">영업</option>
-            <option value="경영">경영</option>
-            <option value="물류">물류</option>
-          </select>
-          <% if(errors.team){ %>
-          <span class="invalid-feedback"><%= errors.team.message %></span>
-          <% } %>
-        </div>
-      </div>
+      <%- include('../partials/teams') %>
 
       <div class="form-group row">
         <label for="username" class="col-sm-3 col-form-label">Username(ID)*</label>
@@ -111,7 +96,7 @@
       <div class="form-group row">
         <label for="newPassword" class="col-sm-3 col-form-label">새 비밀번호</label>
         <div class="col-sm-9 col-sm-offset-3">
-          <input type="password" placeholder="---비밀번호 변경시에만 입력해주세요---" id="newPassword" name="newPassword" value="" class="form-control <%= (errors.newPassword)?'is-invalid':'' %>">
+          <input type="password" placeholder="=== 비밀번호 변경시에만 입력해주세요 ===" id="newPassword" name="newPassword" value="" class="form-control <%= (errors.newPassword)?'is-invalid':'' %>">
           <% if(errors.newPassword){ %>
           <span class="invalid-feedback"><%= errors.newPassword.message %></span>
           <% } %>
@@ -121,7 +106,7 @@
       <div class="form-group row">
         <label for="passwordConfirmation" class="col-sm-3 col-form-label">비밀번호 확인</label>
         <div class="col-sm-9 col-sm-offset-3">
-          <input type="password" placeholder="---비밀번호 변경시에만 입력해주세요---" id="passwordConfirmation" name="passwordConfirmation" value="" class="form-control <%= (errors.passwordConfirmation)?'is-invalid':'' %>">
+          <input type="password" placeholder="=== 비밀번호 변경시에만 입력해주세요 ===" id="passwordConfirmation" name="passwordConfirmation" value="" class="form-control <%= (errors.passwordConfirmation)?'is-invalid':'' %>">
           <% if(errors.passwordConfirmation){ %>
           <span class="invalid-feedback"><%= errors.passwordConfirmation.message %></span>
           <% } %>
