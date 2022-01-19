@@ -17,9 +17,9 @@
     </select>
 
   </div>
-  
+
   <div class="col-md-2">
-    <input class="form-control box <%= (errors.nation)?'is-invalid':'' %>" type="text" name="nation" id="nation" style="width:100%;" disabled value="<%= post.nation %>" placeholder="직접입력">
+    <input class="form-control box <%= (errors.nation)?'is-invalid':'' %>"  autocomplete="off" type="text" name="nation" id="nation" style="width:100%;" disabled value="<%= post.nation %>" placeholder="직접입력">
   </div>
 
 
