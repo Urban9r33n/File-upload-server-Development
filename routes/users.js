@@ -71,6 +71,7 @@ router.put('/:username', util.isLoggedin, checkPermission, function(req, res, ne
   });
 });
 
+
 module.exports = router;
 
 // private functions
