@@ -13,8 +13,6 @@ var util = require('../util');
 
 
 
-
-
 var passport = require('../config/passport');
 
 
@@ -116,7 +114,7 @@ async function createSearchQuery(queries) {
 }
 
 
-
+//history
 router.get('/history', util.isLoggedin,checkADPermission, async function(req, res) {
   var page = Math.max(1, parseInt(req.query.page));
   var limit = Math.max(1, parseInt(req.query.limit));
@@ -128,16 +126,16 @@ router.get('/history', util.isLoggedin,checkADPermission, async function(req, re
   var maxPage = 0;
   var searchQuery = await createSearchQuery(req.query);
 
-  var users = [];
+  var logs = [];
 
 
   if (searchQuery) {
-    var count = await User.countDocuments(searchQuery);
+    var count = await Log.countDocuments(searchQuery);
     maxPage = Math.ceil(count / limit);
 
-    users = await User.find(searchQuery)
+    logs = await Log.find(searchQuery)
     .populate('_id')
-    .sort('-createdAt')
+    .sort('-log_At')
     .skip(skip)
     .limit(limit)
     .exec();
@@ -145,7 +143,7 @@ router.get('/history', util.isLoggedin,checkADPermission, async function(req, re
 
 
   res.render('admin/history', {
-    users: users,
+    logs: logs,
     currentPage: page,
     maxPage: maxPage,
     limit: limit,
@@ -157,61 +155,54 @@ router.get('/history', util.isLoggedin,checkADPermission, async function(req, re
 
 
 
-async function createSearchQuery(queries) {
-  var searchQuery = {};
-  if (queries.searchType && queries.searchText && queries.searchText.length >= 0) {
-    var searchTypes = queries.searchType.toLowerCase().split(',');
-    var userQueries = [];
-
-
-    if (searchTypes.indexOf('team') >= 0) {
-      userQueries.push({
-        team: {
-          $regex: new RegExp(queries.searchText, 'i')
-        }
-      });
-    }
-
-    if (searchTypes.indexOf('username') >= 0) {
-      userQueries.push({
-        username: {
-          $regex: new RegExp(queries.searchText, 'i')
-        }
-      });
-    }
-
-    if (searchTypes.indexOf('name') >= 0) {
-      userQueries.push({
-        name: {
-          $regex: new RegExp(queries.searchText, 'i')
-        }
-      });
-    }
-
-    if (searchTypes.indexOf('email') >= 0) {
-      userQueries.push({
-        email: {
-          $regex: new RegExp(queries.searchText, 'i')
-        }
-      });
-    }
-
-    if (searchTypes.indexOf('auth') >= 0) {
-      userQueries.push({
-        auth: {
-          $regex: new RegExp(queries.searchText, 'i')
-        }
-      });
-    }
-
-    if (userQueries.length > 0) searchQuery = {
-      $or: userQueries
-    };
-    else searchQuery = null;
-
-  }
-  return searchQuery;
-}
+// async function createSearchQuery(queries) {
+//   var searchQuery = {};
+//   if (queries.searchType && queries.searchText && queries.searchText.length >= 0) {
+//     var searchTypes = queries.searchType.toLowerCase().split(',');
+//     var logQueries = [];
+//
+//
+//     if (searchTypes.indexOf('username') >= 0) {
+//       logQueries.push({
+//         team: {
+//           $regex: new RegExp(queries.searchText, 'i')
+//         }
+//       });
+//     }
+//
+//     if (searchTypes.indexOf('action') >= 0) {
+//       logQueries.push({
+//         logname: {
+//           $regex: new RegExp(queries.searchText, 'i')
+//         }
+//       });
+//     }
+//
+//     if (searchTypes.indexOf('log_IP') >= 0) {
+//       logQueries.push({
+//         name: {
+//           $regex: new RegExp(queries.searchText, 'i')
+//         }
+//       });
+//     }
+//
+//     if (searchTypes.indexOf('log_At') >= 0) {
+//       logQueries.push({
+//         email: {
+//           $regex: new RegExp(queries.searchText, 'i')
+//         }
+//       });
+//     }
+//
+//
+//     if (logQueries.length > 0) searchQuery = {
+//       $or: logQueries
+//     };
+//     else searchQuery = null;
+//
+//   }
+//   return searchQuery;
+// }
 
 
 //edit

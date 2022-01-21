@@ -52,6 +52,14 @@ app.use('/comments', util.getPostQueryString, require('./routes/comments'));
 app.use('/files', require('./routes/files'));
 app.use('/administrator_page',util.getPostQueryString, require('./routes/admin'));
 
+
+// Moment in ejs (Date)
+var moment = require('moment');
+var shortDateFormat = "ddd @ h:mmA"; // this is just an example of storing a date format once so you can change it in one place and have it propagate
+app.locals.moment = moment; // this makes moment available as a variable in every EJS page
+app.locals.shortDateFormat = shortDateFormat;
+
+
 // Port setting
 var port = 3000;
 app.listen(port, function(){
