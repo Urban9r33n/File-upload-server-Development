@@ -36,6 +36,11 @@ var userSchema = mongoose.Schema({
     type: String,
     trim: true,
     default: 0
+  },
+  last_IP: {
+    type: String,
+    default: "Invalid"
+
   }
 }, {
   toObject: {

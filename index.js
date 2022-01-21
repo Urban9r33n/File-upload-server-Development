@@ -6,7 +6,12 @@ var flash = require('connect-flash');
 var session = require('express-session');
 var passport = require('./config/passport');
 var util = require('./util');
+var requestIp = require('request-ip');
 var app = express();
+
+
+
+
 
 // DB setting
 mongoose.connect('mongodb://localhost:27017/');
