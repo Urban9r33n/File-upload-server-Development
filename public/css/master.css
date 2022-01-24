@@ -1,10 +1,5 @@
 /*------------*/
 /* new nav */
-
-
-
-
-
 .page-item.active .page-link {
   background-color: #000000;
   border-color: #000000;
@@ -148,7 +143,6 @@ body {
 
 .board-table {
   table-layout: fixed;
-
 }
 
 .board-table .numId {
@@ -242,4 +236,14 @@ h2 {
   font-size: 25px;
   font-weight: 400;
   color: #00000;
+}
+
+.spinner-border {
+  display:none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: 3rem;
+  height: 3rem;
 }

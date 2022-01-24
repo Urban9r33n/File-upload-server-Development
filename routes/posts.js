@@ -128,8 +128,15 @@ router.get('/new', util.isLoggedin, function(req, res) {
 
 
 // create
-router.post('/', util.isLoggedin, upload.single('attachment'), async function(req, res) {
-  var attachment = req.file ? await File.createNewInstance(req.file, req.user._id) : undefined;
+router.post('/', util.isLoggedin, upload.array('attachment'), async function(req, res) {
+
+  for (var i = 0; i < req.files.length; i++) {
+    var attachment = req.files[i] ? await File.createNewInstance(req.files[i], req.user._id) : undefined;
+  }
+
+
+
+
   req.body.attachment = attachment;
   req.body.author = req.user._id;
 
@@ -231,7 +238,7 @@ router.get('/:id/edit', util.isLoggedin, checkPermission, function(req, res) {
 });
 
 // update
-router.put('/:id', util.isLoggedin, checkPermission, upload.single('newAttachment'), async function(req, res) {
+router.put('/:id', util.isLoggedin, checkPermission, upload.array('newAttachment'), async function(req, res) {
   var post = await Post.findOne({
     _id: req.params.id
   }).populate({
@@ -243,7 +250,7 @@ router.put('/:id', util.isLoggedin, checkPermission, upload.single('newAttachmen
 
   req.body.attachment = req.file ? await File.createNewInstance(req.file, req.user._id, req.params.id) : post.attachment;
   req.body.updatedAt = Date.now();
-  if (post.enterprise == '1'){
+  if (post.enterprise == '1') {
     post.enterprise = post.enterprise2;
   }
   Post.findOneAndUpdate({
