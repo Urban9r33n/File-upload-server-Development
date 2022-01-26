@@ -44,29 +44,6 @@ let transport = nodemailer.createTransport({
   },
 });
 
-// 이메일 수신자
-let receiverEmail = "natield233@gmail.com";
-
-
-//전송내용
-let mailOptions = {
-  from: EMAIL,
-  to: receiverEmail,
-  subject: "[nodemailer] Sample Email",
-  html: "<h1 >Binding에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>",
-};
-
-
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  port: 465,
-  secure: true, // true for 465, false for other ports
-  auth: { // 이메일을 보낼 계정 데이터 입력
-    user: '@gmail.com',
-    pass: 'password',
-  },
-});
 
 
 
@@ -216,7 +193,8 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
   req.body.attachment = attachment;
   req.body.author = req.user._id;
 
-  email_list = req.body.email_list
+  email_list = req.body.email_list;
+  var contents = req.body;
 
   Post.create(req.body, function(err, post) {
     if (err) {
@@ -242,24 +220,7 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
           .select('email')
           .exec(function(err, users) {
             for (var j = 0; j < users.length; j++) {
-              receiverEmail = users[j].email;
-
-              mailOptions = {
-                from: EMAIL,
-                to: receiverEmail,
-                subject: "[VDX-Server] 새 글 알림",
-                html: "<h1>Binding에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>",
-              };
-
-              //email send
-              transport.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                  console.log(error);
-                  return;
-                }
-                console.log(info);
-                console.log("send mail success!");
-              });
+              send_mail(users[j].email, contents);
             }
           });
       } else {
@@ -272,68 +233,43 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
           .select('email')
           .exec(function(err, users) {
 
-
             for (var j = 0; j < users.length; j++) {
-              receiverEmail = users[j].email;
-              console.log(receiverEmail)
-
-              mailOptions = {
-                from: EMAIL,
-                to: receiverEmail,
-                subject: "[VDX-Server] 새 글 알림",
-                html: "<h1>Binding에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>",
-              };
-
-              //email send
-              transport.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                  console.log(error);
-                  return;
-                }
-                console.log(info);
-                console.log("send mail success!");
-              });
+              send_mail(users[j].email, contents);
+            }
+          });
+      }
+    } else {
+      if (email_list[0] == '1') {
+        User.find({
+            'auth': {
+              $in: ['2', '3']
+            },
+          })
+          .sort({
+            'team': -1
+          })
+          .select('email')
+          .exec(function(err, users) {
+            for (var j = 0; j < users.length; j++) {
+              send_mail(users[j].email, contents);
             }
           });
 
-      }
-    } else {
-      for (var i = 1; i < email_list.length; i++) {
-        if (email_list[0] == '1') {
+        for (var i = 1; i < email_list.length; i++) {
           User.find({
-              'team': email_list[i],
-              'auth': {
-                $in: ['2', '3']
-              },
-            })
-            .sort({
-              'team': -1
-            })
-            .select('email')
-            .exec(function(err, users) {
-              for (var j = 0; j < users.length; j++) {
-                receiverEmail = users[j].email;
+            'team': email_list[i],
+            'auth': '1',
+          }).sort({
+            'team': -1
+          }).select('email').exec(function(err, users) {
+            for (var j = 0; j < users.length; j++) {
+              send_mail(users[j].email, contents);
+            }
+          });
+        }
 
-                mailOptions = {
-                  from: EMAIL,
-                  to: receiverEmail,
-                  subject: "[VDX-Server] 새 글 알림",
-                  html: "<h1>Binding에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>",
-                };
-
-                //email send
-                transport.sendMail(mailOptions, (error, info) => {
-                  if (error) {
-                    console.log(error);
-                    return;
-                  }
-                  console.log(info);
-                  console.log("send mail success!");
-                });
-              }
-            });
-
-        } else {
+      } else {
+        for (var i = 0; i < email_list.length; i++) {
           User.find({
               'team': email_list[i],
               'auth': {
@@ -346,25 +282,7 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
             .select('email')
             .exec(function(err, users) {
               for (var j = 0; j < users.length; j++) {
-                receiverEmail = users[j].email;
-
-                mailOptions = {
-                  from: EMAIL,
-                  to: receiverEmail,
-                  subject: "[VDX-Server] 새 글 알림",
-                  html: "<h1>Binding에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>",
-                };
-
-                //email send
-                transport.sendMail(mailOptions, (error, info) => {
-                  if (error) {
-                    console.log(error);
-                    return;
-                  }
-                  console.log(info);
-                  console.log("send mail success!");
-                });
-
+                send_mail(users[j].email, contents);
               }
             });
         }
@@ -372,22 +290,55 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
     }
 
 
-
     res.redirect('/posts' + res.locals.getPostQueryString(false, {
       page: 1,
       searchText: ''
     }));
   });
-
-
-
-
-
-
-
-
-
 });
+
+
+
+var send_mail = function(receiver, contents) {
+  receiverEmail = receiver;
+  mailOptions = {
+    from: 'VDX_Team <inzi_VDX@inzi.co.kr>',
+    to: receiverEmail,
+    subject: "[VDX-Server] 새 글 알림",
+    html: "<h1>새 글이 등록되었습니다</h1>"
+    + "<hr>"
+    + "<div>"
+    + "<div><span>국가</span> : <span>" +  contents.nation + "</span></div>"
+    + "<div><span>고객사</span> : <span>" +  contents.enterprise + "</span></div>"
+    + "<div><span><a href='#'>CODE</a></span> : <span>" +  contents.code + "</span></div>"
+    + "<div><span>내용구분</span> : <span>" +  contents.section + "</span></div>"
+    + "<div><span>보낸이</span> : <span>" +  contents.sender + "</span></div>"
+    + "<div><span>부서</span> : <span>" +  contents.sender_dept + "</span></div>"
+    + "</div>"
+    + "<hr>"
+    + "본문 <br>"
+    + contents.body
+    + "<hr>"
+  }; //email
+
+  transport.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+      return "Fail";
+    }
+    console.log(info);
+    console.log("send mail success!");
+    return "Success"
+  });
+}
+
+
+
+
+
+
+
+
 
 // show
 router.get('/:id', util.isLoggedin, checkreadPermission, function(req, res) {
