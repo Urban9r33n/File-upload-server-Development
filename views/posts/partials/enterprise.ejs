@@ -40,10 +40,11 @@
       $("#enterprise2 option:selected").each(function() {
         if ($(this).val() == '') {
           //직접입력일 경우
-          $("enterprise").val('');
+          $("#enterprise").val('');
           //값 초기화
-          $("#enterprise").attr("disabled", false);
           //활성화
+          $("#enterprise").attr("disabled", false);
+          $("#enterprise").attr("readonly", false);
         } else {
           //직접입력이 아닐경우
           $("#enterprise").val($(this).text());

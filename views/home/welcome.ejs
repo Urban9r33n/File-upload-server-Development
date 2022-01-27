@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 
   <link rel="shortcut icon" href="image/INZI_logo3.png" <meta name="author" content="TG">
@@ -17,9 +17,6 @@
 
 
 
-
-  <!-- Awesome font -->
-  <script src="https://kit.fontawesome.com/3573fc872a.js" crossorigin="anonymous"></script>
 
 
   <!-- jquery & bootstrap -->
@@ -40,32 +37,38 @@
 
   <!-- my js -->
   <script src="/js/script.js"></script>
+    <script src="https://kit.fontawesome.com/3573fc872a.js" crossorigin="anonymous"></script>
+
+
 
   <title>인지디스플레이 VDX 서버 입니다.</title>
 
 
   <!-- css -->
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <noscript>
+    <link rel="stylesheet" href="assets/css/noscript.css" />
+  </noscript>
+  <!-- Awesome font -->
+
+
+
+
 
 </head>
 
 <body>
 
 
+  <div id="wrapper">
+    <div id="bg"></div>
+    <div id="overlay"></div>
+    <div id="main">
 
-
-  <section id="main">
-
-    <div class="wrapper">
-
-
-      <div class="button-vdx">
-
-          <img class="inzi logo2" src="image/INZI_logo4.png" alt="INZI logo">
-          <h1>INZI DISPLAY VDX SERVER</h1>
-          <h2>환영합니다</h2>
-
-
+      <!-- Header -->
+      <header id="header">
+        <h1>VDX-Server</h1>
+        <p>Inzidisplay Co. Ltd.</p>
         <div class="row">
           <div class="bt col-lg-6 ">
             <% if(isAuthenticated){ %>
@@ -83,10 +86,28 @@
           </div>
 
         </div>
+      </header>
 
-      </div>
+      <!-- Footer -->
+      <footer id="footer">
+        <span class="copyright">&copy; INZI DISPLAY CO., LTD.</span>
+      </footer>
+
     </div>
+  </div>
+  <script>
+    window.onload = function() {
+      document.body.classList.remove('is-preload');
+    }
+    window.ontouchmove = function() {
+      return false;
+    }
+    window.onorientationchange = function() {
+      document.body.scrollTop = 0;
+    }
+  </script>
 
+</body>
 
 
 

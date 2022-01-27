@@ -30,14 +30,14 @@
       <tbody>
         <% if(users === null || users.length === 0){ %>
         <tr>
-          <td colspan=5> 게시글이 없습니다. :) </td>
+          <td colspan=5> 표시할 회원이 없습니다. 🙂 </td>
         </tr>
         <% } %>
         <% users.forEach(function(user) { %>
 
         <tr>
           <td class="name"><%= user.name %>
-      
+
           </td>
           <td class="username"><a href="/administrator_page/<%= user.username %>" class="title-container"><%= user.username %> <i class="fa fa-cog fa-xs" aria-hidden="true"></i></a></td>
           <td class="email"><%= user.email %></td>

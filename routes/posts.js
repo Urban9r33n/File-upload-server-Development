@@ -207,7 +207,14 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
       attachment.save();
     }
 
-    if (email_list.length == 1 || !Array.isArray(email_list)) {
+    if (!email_list) {
+      res.write("<script>alert('Please select the email list!')</script>");
+      res.write("<script>window.location='/posts/new" + res.locals.getPostQueryString() +"'</script>");
+      return res.end();
+    }
+
+    console.log(email_list)
+     if (email_list.length == 1 || !Array.isArray(email_list)) {
       if (email_list[0] == '1') {
         User.find({
             'auth': {
@@ -305,20 +312,20 @@ var send_mail = function(receiver, contents) {
     from: 'VDX_Team <inzi_VDX@inzi.co.kr>',
     to: receiverEmail,
     subject: "[VDX-Server] 새 글 알림",
-    html: "<h1>새 글이 등록되었습니다</h1>"
-    + "<hr>"
-    + "<div>"
-    + "<div><span>국가</span> : <span>" +  contents.nation + "</span></div>"
-    + "<div><span>고객사</span> : <span>" +  contents.enterprise + "</span></div>"
-    + "<div><span><a href='#'>CODE</a></span> : <span>" +  contents.code + "</span></div>"
-    + "<div><span>내용구분</span> : <span>" +  contents.section + "</span></div>"
-    + "<div><span>보낸이</span> : <span>" +  contents.sender + "</span></div>"
-    + "<div><span>부서</span> : <span>" +  contents.sender_dept + "</span></div>"
-    + "</div>"
-    + "<hr>"
-    + "본문 <br>"
-    + contents.body
-    + "<hr>"
+    html: "<h1>새 글이 등록되었습니다</h1>" +
+      "<hr>" +
+      "<div>" +
+      "<div><span>국가</span> : <span>" + contents.nation + "</span></div>" +
+      "<div><span>고객사</span> : <span>" + contents.enterprise + "</span></div>" +
+      "<div><span><a href='#'>CODE</a></span> : <span>" + contents.code + "</span></div>" +
+      "<div><span>내용구분</span> : <span>" + contents.section + "</span></div>" +
+      "<div><span>보낸이</span> : <span>" + contents.sender + "</span></div>" +
+      "<div><span>부서</span> : <span>" + contents.sender_dept + "</span></div>" +
+      "</div>" +
+      "<hr>" +
+      "본문 <br>" +
+      contents.body +
+      "<hr>"
   }; //email
 
   transport.sendMail(mailOptions, (error, info) => {
@@ -331,12 +338,6 @@ var send_mail = function(receiver, contents) {
     return "Success"
   });
 }
-
-
-
-
-
-
 
 
 
