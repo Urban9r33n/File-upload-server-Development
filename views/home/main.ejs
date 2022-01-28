@@ -14,8 +14,14 @@
 
   <div class="container mb-3">
     <br />
-    <h2><strong> 안녕하세요! <%=currentUser.name %>님!</strong></h2>
-    <hr />
+
+
+
+      <div class="card-body">
+        <h2 class="main_text">안녕하세요! <%=currentUser.name %>님</strong></h2>
+      </div>
+      <br />
+
 
 
 
@@ -23,7 +29,7 @@
 
     <div class="row c-r">
       <div class="col-md-6">
-        <div class="card text-center cards">
+        <div class="card anim text-center cards">
           <div class="card-header">
             VDX_SERVER
           </div>
@@ -38,7 +44,7 @@
         </div>
       </div>
       <div class="col-md-6">
-        <div class="card text-center cards">
+        <div class="card anim text-center cards">
           <div class="card-header">
             <% if(currentUser.auth === '3'){ %>
             회원 관리
@@ -70,7 +76,7 @@
     <% if(currentUser.auth === '3'){ %>
     <div class="row c-r">
       <div class="col-md-6">
-        <div class="card text-center cards">
+        <div class="card anim text-center cards">
           <div class="card-header">
             VDX_SERVER
           </div>
@@ -85,14 +91,14 @@
         </div>
       </div>
       <div class="col-md-6">
-        <div class="card text-center cards">
+        <div class="card anim text-center cards">
           <div class="card-header">
-            메일링 리스트
+            개인 정보 수정
           </div>
           <div class="card-body ">
-            <h5 class="card-title">메일링 리스트 관리</h5>
+            <h5 class="card-title">개인 정보 수정</h5>
             <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
-            <a href="/users/<%= currentUser.username %>" class="btn btn-dark ">메일링 리스트</a>
+            <a href="/users/<%= currentUser.username %>" class="btn btn-dark ">정보 수정</a>
           </div>
           <!-- <div class="card-footer text-muted">
       2 days ago
