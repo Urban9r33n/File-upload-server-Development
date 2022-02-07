@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%- include('../partials/head') %>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
+</head>
+
+<body>
+  <%- include('../partials/nav') %>
+
+  <div class="container mb-3">
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb p-1 pl-2 pr-2">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/posts">Board</a></li>
+        <li class="breadcrumb-item"><a href="/posts/<%= post._id %>">re:<%= post.title %></a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit Post</li>
+      </ol>
+    </nav>
+
+    <form action="/posts/<%= post._id %>/reply?_method=put<%= getPostQueryString(true) %>" enctype="multipart/form-data" method="post">
+
+
+
+
+
+      <!-- title -->
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="title">메일 제목</label>
+          </div>
+        </div>
+
+        <div class="col-md-10">
+          <input type="text" id="re_title" autocomplete="off" name="re_title" value="Re:<%= post.title %>" placeholder="메일제목" class="form-control <%= (errors.re_title)?'is-invalid':'' %>">
+        </div>
+        <% if(errors.title){ %>
+        <span class="invalid-feedback"><%= errors.re_title.message %></span>
+        <% } %>
+      </div>
+
+
+
+      <!-- attachment -->
+      <div class="row">
+        <div class="col-md-2">
+          <label for="re_attachment">첨부파일</label>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+
+
+
+            <% if(post.re_attachment){ %>
+
+            <div class="input-group" id="currentAttachemnt">
+              <% for(var i = 0; i < post.re_attachment.length; i++){ %>
+                <input type="hidden" id="re_attachment" name="re_attachment" value="<%= post.re_attachment[i]?post.re_attachment._id:'' %>">
+              <div class="col-md-8">
+                <input type="text" class="form-control" value="<%= post.re_attachment[i].originalFileName %>" readonly />
+              </div>
+
+              <% } %>
+              <div class="col-md-4">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" onclick="$('#re_attachment').val('');$('#currentAttachemnt').hide();$('#newAttachment').removeClass('d-none');">첨부파일 삭제</button>
+                </div>
+              </div>
+            </div>
+
+            <% } %>
+
+            <input type="file" id="newAttachment" class="form-control-file <%= post.re_attachment?'d-none':'' %>" name="newAttachment" multiple>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <!-- <textarea id="re_body" name="re_body" rows="5" class="form-control <%= (errors.re_body)?'is-invalid':'' %>"><%= post.re_body %></textarea> -->
+
+        <textarea id="summernote" name="re_body" class="form-control <%= (errors.re_body)?'is-invalid':'' %>"><%- post.re_body %></textarea>
+        <script>
+          $(document).ready(function() {
+            $('#summernote').summernote({
+              height: 500,
+              minHeight: 500,
+              maxHeight: 500,
+              focus: true,
+              lang: "ko-KR",
+              placeholder: '내용을 입력해주세요.',
+              toolbar: [
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                ['color', ['forecolor', 'color']],
+                ['table', ['table']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['insert', ['link']],
+                ['view', ['fullscreen', 'help']]
+              ],
+              fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', '맑은 고딕', '궁서', '굴림체',
+                '굴림', '돋음체', '바탕체'
+              ],
+              fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36',
+                '50', '72'
+              ]
+            });
+          });
+        </script>
+      </div>
+
+<div width=0 height=0 style="visibility:hidden">
+       <input type="checkbox" id="is_reply" name="is_reply" value=true checked>
+
+    </div>
+
+
+
+      <% if(errors.re_body){ %>
+      <span class="invalid-feedback"><%= errors.re_body.message %></span>
+      <% } %>
+
+      <div>
+        <a class="btn btn-dark" href="/posts<%= getPostQueryString() %>">Back</a>
+        <button type="submit" class="btn btn-dark">Submit</button>
+      </div>
+  </div>
+
+  <!-- loading -->
+  <%- include('partials/loading') %>
+
+
+
+
+
+</body>
+
+</html>

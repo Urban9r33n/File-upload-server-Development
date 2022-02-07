@@ -8,6 +8,7 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
 </head>
+
 <body>
 
   <%- include('../partials/nav') %>
@@ -105,15 +106,17 @@
         <% if(errors.sender){ %>
         <span class="invalid-feedback"><%= errors.sender.message %></span>
         <% } %>
-        <div class="col-md-2">
-          <!-- <div class="form-group">
-            <label for="date">수신 날짜</label>
 
-          </div> -->
+
+        <!-- private check -->
+        <div class="col-md-6" style="text-align:center">
+          <input class="form-check-input" checked="checked" type="checkbox" name="private_check" value="true" id="private_check">
+          <label class="form-check-label" for="private_check">
+            보안기능(대외비) - 체크시 일부 권한자만 게시물 확인 가능
+          </label>
+
         </div>
-        <div class="col-md-4">
-          <!-- <input type="date" id="date"> -->
-        </div>
+
       </div>
 
 
@@ -129,33 +132,52 @@
           </div>
         </div>
 
+        <div class="col-md-2">
+          <!-- <div class="form-group">
+            <label for="date">수신 날짜</label>
 
-
-        <!-- private check -->
-        <div class="col-md-6">
-          <input class="form-check-input" checked="checked" type="checkbox" name="private_check" value="true" id="private_check">
-          <label class="form-check-label" for="private_check">
-            보안기능(대외비) - 체크시 일부 권한자만 게시물 확인 가능
-          </label>
+          </div> -->
         </div>
+
+        <div class="col-md-4">
+          <input type="date" id="date">
+        </div>
+
+
+
+
+
       </div>
 
-      <!-- multi select *자동메일 -->
-      <%- include('partials/multiple') %>
 
-      <!-- Error Handler -->
-      <% if(errors.unhandled) {%>
-      <% if(errors.unhandled.substr(18, 5) === "11000"){ %>
-      <div class="alert alert-danger" role="alert" style="margin-top: 1%;">
-        Warning: 이미 등록된 CODE 입니다!
-      </div>
+      <div class="row">
 
-      <%} else {%>
-      <div class="alert alert-danger invalid-feedback d-block" role="alert" style="margin-top: 1%;">
-        에러: <%= errors.unhandled.substr(2) %> 관리자에게 문의하세요.
-      </div>
-      <% }%>
-      <% } %>
+
+          <!-- multi select *자동메일 -->
+          <%- include('partials/multiple') %>
+
+
+
+        </div>
+
+
+
+        <!-- Error Handler -->
+        <% if(errors.unhandled) {%>
+        <% if(errors.unhandled.substr(18, 5) === "11000"){ %>
+        <div class="alert alert-danger" role="alert" style="margin-top: 1%;">
+          Warning: 이미 등록된 CODE 입니다!
+        </div>
+
+        <%} else {%>
+        <div class="alert alert-danger invalid-feedback d-block" role="alert" style="margin-top: 1%;">
+          에러: <%= errors.unhandled.substr(2) %> 관리자에게 문의하세요.
+        </div>
+        <% }%>
+        <% } %>
+
+
+
 
 
 
@@ -209,7 +231,7 @@
       <!-- loading -->
       <%- include('partials/loading') %>
 
-      
+
 
 
     </form>

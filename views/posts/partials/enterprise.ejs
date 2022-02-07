@@ -7,7 +7,7 @@
 
 
 
-  <div class="col-md-8">
+  <div class="col-md-5">
 
     <select class="form-control" id="enterprise2" name="enterprise2" >
       <option selected disabled hidden>=== 업체를 선택하세요 ===</option>
@@ -27,9 +27,10 @@
     </select>
   </div>
 
+<!-- https://selectize.dev/demos.html -->
 
 
-  <div class="col-md-2">
+  <div class="col-md-5">
     <input class="form-control box <%= (errors.enterprise)?'is-invalid':'' %>"  autocomplete="off" type="text" name="enterprise" id="enterprise" style="width:100%;" disabled value="<%= post.enterprise %>" placeholder="직접입력">
 
   </div>
@@ -58,7 +59,6 @@
       });
     });
   </script>
-
 
 
   <% if(errors.enterprise){ %>

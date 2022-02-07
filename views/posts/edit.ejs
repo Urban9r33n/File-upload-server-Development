@@ -90,8 +90,6 @@
         <% } %>
       </div>
 
-
-      <!-- sender -->
       <!-- sender -->
       <div class="row">
         <div class="col-md-2">
@@ -99,7 +97,6 @@
             <label for="sender">보낸이</label>
           </div>
         </div>
-
         <div class="col-md-4">
           <input type="text" id="sender" autocomplete="off" name="sender" placeholder="보낸이" value="<%= post.sender %>" class="form-control <%= (errors.sender)?'is-invalid':'' %>">
         </div>
@@ -107,16 +104,14 @@
         <span class="invalid-feedback"><%= errors.sender.message %></span>
         <% } %>
 
-        <div class="col-md-2">
-          <!-- <div class="form-group">
-            <label for="date">수신 날짜</label>
 
-          </div> -->
-        </div>
+        <!-- private check -->
+        <div class="col-md-6" style="text-align:center">
+          <input class="form-check-input" checked="checked" type="checkbox" name="private_check" value="true" id="private_check">
+          <label class="form-check-label" for="private_check">
+            보안기능(대외비) - 체크시 일부 권한자만 게시물 확인 가능
+          </label>
 
-
-        <div class="col-md-4">
-          <!-- <input type="date" id="date"> -->
         </div>
 
       </div>
@@ -129,34 +124,43 @@
 
         <div class="col-md-4">
           <div class="form-group">
-            <input type="hidden" id="attachment" name="attachment" value="<%= post.attachment?post.attachment._id:'' %>">
+
 
 
             <% if(post.attachment){ %>
+
             <div class="input-group" id="currentAttachemnt">
-              <input type="text" class="form-control" value="<%= post.attachment.originalFileName %>" readonly />
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" onclick="$('#attachment').val('');$('#currentAttachemnt').hide();$('#newAttachment').removeClass('d-none');">Delete</button>
+              <% for(var i = 0; i < post.attachment.length; i++){ %>
+                <input type="hidden" id="attachment" name="attachment" value="<%= post.attachment[i]?post.attachment._id:'' %>">
+              <div class="col-md-8">
+                <input type="text" class="form-control" value="<%= post.attachment[i].originalFileName %>" readonly />
+              </div>
+
+              <% } %>
+              <div class="col-md-4">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" onclick="$('#attachment').val('');$('#currentAttachemnt').hide();$('#newAttachment').removeClass('d-none');">첨부파일 삭제</button>
+                </div>
               </div>
             </div>
+
+
+
             <% } %>
 
             <input type="file" id="newAttachment" class="form-control-file <%= post.attachment?'d-none':'' %>" name="newAttachment" multiple>
           </div>
         </div>
-
-
-        <!-- private check -->
-        <div class="col-md-6">
-          <input class="form-check-input" checked="checked" type="checkbox" name="private_check" value="true" id="private_check">
-          <label class="form-check-label" for="private_check">
-            보안기능(대외비) - 체크시 일부 권한자만 게시물 확인 가능
-          </label>
-        </div>
       </div>
 
-      <!-- multi select *자동메일 -->
-      <%- include('partials/multiple') %>
+
+      <div class="row">
+
+
+        <!-- multi select *자동메일 -->
+        <%- include('partials/multiple') %>
+
+      </div>
 
       <% if(errors.unhandled) {%>
       <% if(errors.unhandled.substr(18, 5) === "11000"){ %>
@@ -224,16 +228,14 @@
         <button type="submit" class="btn btn-dark">Submit</button>
       </div>
   </div>
-  </div>
+
 
   <!-- loading -->
   <%- include('partials/loading') %>
 
 
 
-  </form>
 
-  </div>
 </body>
 
 </html>

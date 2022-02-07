@@ -32,11 +32,9 @@ util.isLoggedin = function(req, res, next) {
 
 
 util.noPermission = function(req, res) {
-  req.flash('errors', {
-    login: "권한이 없습니다."
-  });
-  req.logout();
-  res.redirect('/login');
+
+
+res.send("<script>alert('권한이 없습니다!');location.href='/';</script>");
 }
 
 util.getPostQueryString = function(req, res, next) {

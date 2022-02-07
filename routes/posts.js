@@ -31,21 +31,20 @@ function createRandomPassword(variable, passwordLength) {
 
 
 // 본인 Gmail 계정
-const EMAIL = "natield233@gmail.com";
-const EMAIL_PW = "Tkei0999";
+const EMAIL = "upload_team@daum.net";
+const EMAIL_PW = "brownie112";
 
 
 // transport 생성
 let transport = nodemailer.createTransport({
-  service: "gmail",
+  service: "Daum",
+  host: "smtp.daum.net",
+  port: 465,
   auth: {
     user: EMAIL,
     pass: EMAIL_PW,
   },
 });
-
-
-
 
 
 // ---------------------------------------------------------
@@ -81,7 +80,19 @@ router.get('/', util.isLoggedin, async function(req, res) {
         }
       },
       {
-        $unwind: '$author'
+        $lookup: {
+          from: 'users',
+          localField: 're_author',
+          foreignField: '_id',
+          as: 're_author'
+        }
+      },
+      {
+        $unwind: '$author',
+      },
+      {
+        $unwind: { path: "$re_author", preserveNullAndEmptyArrays: true }
+
       },
       {
         $sort: {
@@ -94,6 +105,8 @@ router.get('/', util.isLoggedin, async function(req, res) {
       {
         $limit: limit
       },
+
+
       {
         $lookup: {
           from: 'comments',
@@ -110,12 +123,13 @@ router.get('/', util.isLoggedin, async function(req, res) {
           as: 'attachment'
         }
       },
-      {
-        $unwind: {
-          path: '$attachment',
-          preserveNullAndEmptyArrays: true
-        }
-      },
+
+      // {
+      //   $unwind: {
+      //     path: '$attachment',
+      //     preserveNullAndEmptyArrays: true
+      //   }
+      // },
       {
         $project: {
           title: 1,
@@ -129,21 +143,25 @@ router.get('/', util.isLoggedin, async function(req, res) {
           code: 1,
           sender: 1,
           private_check: 1,
-          attachment: {
-            $cond: [{
-              $and: ['$attachment', {
-                $not: '$attachment.isDeleted'
-              }]
-            }, true, false]
-          },
+          attachment: 1,
           createdAt: 1,
           commentCount: {
             $size: '$comments'
-          }
+          },
+          is_reply: 1,
+          re_title: 1,
+          re_author: {
+            username: 1,
+          },
+          re_attachment: 1,
+          re_createdAt: 1
+
         }
       },
     ]).exec();
   }
+
+
 
   res.render('posts/index', {
     posts: posts,
@@ -171,8 +189,10 @@ router.get('/new', util.isLoggedin, function(req, res) {
 // create
 router.post('/', util.isLoggedin, upload.array('attachment'), async function(req, res) {
 
+  var attachment = new Array();
+
   for (var i = 0; i < req.files.length; i++) {
-    var attachment = req.files[i] ? await File.createNewInstance(req.files[i], req.user._id) : undefined;
+    attachment[i] = req.files[i] ? await File.createNewInstance(req.files[i], req.user._id) : undefined;
   }
 
 
@@ -188,10 +208,9 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
     html: "<h1>Binding에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>",
   };
 
-
-
   req.body.attachment = attachment;
   req.body.author = req.user._id;
+
 
   email_list = req.body.email_list;
   var contents = req.body;
@@ -202,19 +221,19 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
       req.flash('errors', util.parseError(err));
       return res.redirect('/posts/new' + res.locals.getPostQueryString());
     }
-    if (attachment) {
+    if (attachment[0] != null) {
       attachment.postId = post._id;
-      attachment.save();
+      attachment[0].save();
     }
 
     if (!email_list) {
       res.write("<script>alert('Please select the email list!')</script>");
-      res.write("<script>window.location='/posts/new" + res.locals.getPostQueryString() +"'</script>");
+      res.write("<script>window.location='/posts/new" + res.locals.getPostQueryString() + "'</script>");
       return res.end();
     }
 
     console.log(email_list)
-     if (email_list.length == 1 || !Array.isArray(email_list)) {
+    if (email_list.length == 1 || !Array.isArray(email_list)) {
       if (email_list[0] == '1') {
         User.find({
             'auth': {
@@ -309,7 +328,7 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
 var send_mail = function(receiver, contents) {
   receiverEmail = receiver;
   mailOptions = {
-    from: 'VDX_Team <inzi_VDX@inzi.co.kr>',
+    from: 'VDX_SERVER <upload_team@daum.net>',
     to: receiverEmail,
     subject: "[VDX-Server] 새 글 알림",
     html: "<h1>새 글이 등록되었습니다</h1>" +
@@ -430,8 +449,28 @@ router.put('/:id', util.isLoggedin, checkPermission, upload.array('newAttachment
     }
   });
 
-  req.body.attachment = req.file ? await File.createNewInstance(req.file, req.user._id, req.params.id) : post.attachment;
+  var attachment = new Array();
+
+
+
+  for (var i = 0; i < req.files.length; i++) {
+    if (req.files[i]) {
+      attachment[i] = await File.createNewInstance(req.files[i], req.user._id, req.params.id)
+    }
+  }
+
+  if (req.files.length == 0) {
+    attachment = post.attachment;
+
+  }
+
+
+  req.body.attachment = attachment;
+
+
   req.body.updatedAt = Date.now();
+
+
   if (post.enterprise == '1') {
     post.enterprise = post.enterprise2;
   }
@@ -487,8 +526,140 @@ function checkreadPermission(req, res, next) {
 
     next();
   });
-
 }
+
+
+
+//-------------------------------------REPLY---------------------------------------
+
+// reply
+router.get('/:id/reply', util.isLoggedin, function(req, res) {
+
+
+  var post = req.flash('post')[0];
+  var errors = req.flash('errors')[0] || {};
+  if (!post) {
+    Post.findOne({
+        _id: req.params.id
+      })
+      .populate({
+        path: 're_attachment',
+        match: {
+          isDeleted: false
+        }
+      })
+      .exec(function(err, post) {
+        if (err) return res.json(err);
+        res.render('posts/reply', {
+          post: post,
+          errors: errors
+        });
+      });
+  } else {
+    post._id = req.params.id;
+    res.render('posts/reply', {
+      post: post,
+      errors: errors
+    });
+  }
+});
+
+// show
+router.get('/:id/reply_show', util.isLoggedin, checkreadPermission, function(req, res) {
+
+  Promise.all([
+      Post.findOne({
+        _id: req.params.id
+      }).populate({
+        path: 'author',
+        select: ['username', 'email']
+      }).populate({
+        path: 'attachment',
+        match: {
+          isDeleted: false
+        }
+      }).populate({
+        path: 're_attachment',
+        match: {
+          isDeleted: false
+        }
+      }),
+
+      Comment.find({
+        post: req.params.id
+      }).sort('createdAt').populate({
+        path: 'author',
+        select: 'username'
+      })
+    ])
+    .then(([post]) => {
+
+      res.render('posts/reply_show', {
+        post: post,
+      });
+    })
+    .catch((err) => {
+      return res.json(err);
+    });
+});
+
+
+// re update
+router.put('/:id/reply', util.isLoggedin, checkPermission, upload.array('newAttachment'), async function(req, res) {
+  var post = await Post.findOne({
+    _id: req.params.id
+  }).populate({
+    path: 're_attachment',
+    match: {
+      isDeleted: false
+    }
+  });
+
+
+  req.body.re_author = req.user._id;
+  var re_attachment = new Array();
+
+
+
+  for (var i = 0; i < req.files.length; i++) {
+    if (req.files[i]) {
+      re_attachment[i] = await File.createNewInstance(req.files[i], req.user._id, req.params.id)
+    }
+  }
+
+  if (req.files.length == 0) {
+    re_attachment = post.re_attachment;
+
+  }
+
+
+  req.body.re_attachment = re_attachment;
+
+
+  req.body.re_lasteditted = Date.now();
+
+
+  if (post.enterprise == '1') {
+    post.enterprise = post.enterprise2;
+  }
+  Post.findOneAndUpdate({
+    _id: req.params.id
+  }, req.body, {
+    runValidators: true
+  }, function(err, post) {
+    if (err) {
+      req.flash('post', req.body);
+      req.flash('errors', util.parseError(err));
+      return res.redirect('/posts/' + req.params.id + '/reply/' + res.locals.getPostQueryString());
+    }
+    res.redirect('/posts/' + req.params.id + '/reply_show/' + res.locals.getPostQueryString());
+  });
+});
+
+
+
+
+//---------------------------------------------------------------------------------
 
 
 //for searching
