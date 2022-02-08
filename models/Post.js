@@ -66,6 +66,10 @@ var postSchema = mongoose.Schema({
     type: Boolean,
     requried: [true, 'checker is requried!']
   },
+  reply: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'replies'
+  }],
   is_reply: {
     type: Boolean,
     default: false

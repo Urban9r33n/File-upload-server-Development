@@ -78,30 +78,24 @@
 
 
         <!-- 답글 있을시 -->
-        <% if(post.is_reply == true){ %>
+
+
+        <% if(post.reply){ %>
+
+        <% for(let j = 0; j< post.reply.length; j++) {%>
+
         <tr style="background-color: #fafafa">
           <td colspan="6">
           </td>
-
-
           <td class="title">
-            <a href="/posts/<%= post._id %>/reply_show<%= getPostQueryString() %>" class="title-container">
-
+            <a href="/posts/<%= post.reply[j]._id %>/reply_show<%= getPostQueryString() %>" class="title-container">
               <div data-search-highlight="title" class="title-ellipsis ellipsis float-left">
-
-                <% console.log(post)%>
-
                 <i class="fas fa-reply fa-rotate-180"></i>
 
-
-                <% if(post.re_attachment.length != 0){ %>
+                <% if(post.reply[j].attachment[0]){ %>
                 <i class="fas fa-save"></i>
                 <% } %>
-
-                <span class="title-text"><%= post.re_title %></span>
-                <% if(post.commentCount){ %>
-                (<%= post.commentCount %>)
-                <% } %>
+                <%= post.reply[j] ? post.reply[j].title : "" %>
 
                 <% if (post.private_check) { %>
                 <i class="fas fa-lock fa-xs"></i>
@@ -111,18 +105,11 @@
           </td>
 
 
-          <td class="author">
-
-            <div data-search-highlight="author" class="ellipsis"><%= post.re_author ? post.re_author.username : "" %></div>
-
-          </td>
-
 
           <td>
-
           </td>
-
         </tr>
+  <% } %>
         <% } %>
         <% }) %>
       </tbody>

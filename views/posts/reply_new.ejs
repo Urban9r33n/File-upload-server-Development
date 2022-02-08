@@ -13,6 +13,8 @@
 <body>
   <%- include('../partials/nav') %>
 
+
+
   <div class="container mb-3">
 
     <nav aria-label="breadcrumb">
@@ -24,9 +26,7 @@
       </ol>
     </nav>
 
-    <form action="/posts/<%= post._id %>/reply?_method=put<%= getPostQueryString(true) %>" enctype="multipart/form-data" method="post">
-
-
+    <form action="/posts/<%= post._id %>/reply_new<%= getPostQueryString() %>" enctype="multipart/form-data" method="post">
 
 
 
@@ -39,57 +39,44 @@
         </div>
 
         <div class="col-md-10">
-          <input type="text" id="re_title" autocomplete="off" name="re_title" value="Re:<%= post.title %>" placeholder="메일제목" class="form-control <%= (errors.re_title)?'is-invalid':'' %>">
+          <input type="text" id="title" autocomplete="off" name="title" value="Re:<%= post.title %>" placeholder="메일제목" class="form-control <%= (errors.title)?'is-invalid':'' %>">
         </div>
         <% if(errors.title){ %>
-        <span class="invalid-feedback"><%= errors.re_title.message %></span>
+        <span class="invalid-feedback"><%= errors.title.message %></span>
         <% } %>
       </div>
 
 
-
-      <!-- attachment -->
       <div class="row">
         <div class="col-md-2">
-          <label for="re_attachment">첨부파일</label>
+          <label for="attachment">첨부파일</label>
         </div>
 
         <div class="col-md-4">
           <div class="form-group">
-
-
-
-            <% if(post.re_attachment){ %>
-
-            <div class="input-group" id="currentAttachemnt">
-              <% for(var i = 0; i < post.re_attachment.length; i++){ %>
-              <input type="hidden" id="re_attachment" name="re_attachment" value="<%= post.re_attachment[i]?post.re_attachment._id:'' %>">
-              <div class="col-md-8">
-                <input type="text" class="form-control" value="<%= post.re_attachment[i].originalFileName %>" readonly />
-              </div>
-
-              <% } %>
-              <div class="col-md-4">
-                <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button" onclick="$('#re_attachment').val('');$('#currentAttachemnt').hide();$('#newAttachment').removeClass('d-none');">첨부파일 삭제</button>
-                </div>
-              </div>
-            </div>
-
-            <% } %>
-
-            <input type="file" id="newAttachment" class="form-control-file <%= post.re_attachment?'d-none':'' %>" name="newAttachment" multiple>
+            <input type="file" name="attachment" class="form-control-file" id="attachment" multiple>
           </div>
         </div>
+
+        <div class="col-md-2">
+          <!-- <div class="form-group">
+            <label for="date">수신 날짜</label>
+
+          </div> -->
+        </div>
+
+        <div class="col-md-4">
+        </div>
+
       </div>
 
 
 
       <div class="form-group">
-        <!-- <textarea id="re_body" name="re_body" rows="5" class="form-control <%= (errors.re_body)?'is-invalid':'' %>"><%= post.re_body %></textarea> -->
+        <input type="hidden" id="post" autocomplete="off" name="post" value="<%= post._id %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
+        <input type="hidden" id="post" autocomplete="off" name="private_check" value="<%= post.private_check %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
 
-
-        <textarea id="summernote" name="body" class="form-control <%= (errors.body)?'is-invalid':'' %>"><%= post.body %></textarea>
+        <textarea id="summernote" name="body" class="form-control <%= (errors.body)?'is-invalid':'' %>"></textarea>
 
         <script>
           $(document).ready(function() {
@@ -122,15 +109,10 @@
         </script>
       </div>
 
-      <div width=0 height=0 style="visibility:hidden">
-        <input type="checkbox" id="is_reply" name="is_reply" value=true checked>
-
-      </div>
 
 
-
-      <% if(errors.re_body){ %>
-      <span class="invalid-feedback"><%= errors.re_body.message %></span>
+      <% if(errors.body){ %>
+      <span class="invalid-feedback"><%= errors.body.message %></span>
       <% } %>
 
       <div>

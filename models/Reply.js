@@ -1,6 +1,4 @@
 var mongoose = require('mongoose');
-var Counter = require('./Counter');
-var Daily_Counter = require('./Dailycounter');
 
 // schema
 var replySchema = mongoose.Schema({
@@ -8,23 +6,23 @@ var replySchema = mongoose.Schema({
     type: Boolean,
     requried: [true, 'checker is requried!']
   },
-  re_title: {
+  title: {
     type: String,
     default: "Re:"
   },
-  re_author: {
+  author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
-  re_body: {
+  body: {
     type: String,
     default: "답글입니다."
   },
-  re_attachment: [{
+  attachment: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'file',
   }],
-  re_created: {
+  created: {
     type: Date,
     default: Date.now
   }

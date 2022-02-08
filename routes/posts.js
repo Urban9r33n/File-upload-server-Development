@@ -5,6 +5,7 @@ var upload = multer({
   dest: 'uploadedFiles/'
 });
 var Post = require('../models/Post');
+var Reply = require('../models/Reply');
 var User = require('../models/User');
 var Comment = require('../models/Comment');
 var File = require('../models/File');
@@ -68,62 +69,35 @@ router.get('/', util.isLoggedin, async function(req, res) {
   if (searchQuery) {
     var count = await Post.countDocuments(searchQuery);
     maxPage = Math.ceil(count / limit);
-    posts = await Post.aggregate([{
-        $match: searchQuery
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'author',
-          foreignField: '_id',
-          as: 'author'
-        }
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 're_author',
-          foreignField: '_id',
-          as: 're_author'
-        }
-      },
-      {
-        $unwind: '$author',
-      },
-      {
-        $unwind: { path: "$re_author", preserveNullAndEmptyArrays: true }
-
-      },
-      {
-        $sort: {
-          createdAt: -1
-        }
-      },
-      {
-        $skip: skip
-      },
-      {
-        $limit: limit
-      },
-
-
-      {
-        $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'post',
-          as: 'comments'
-        }
-      },
-      {
-        $lookup: {
+    posts = await Post.aggregate([
+      {$match: searchQuery},
+      {$lookup:
+        {from: 'users',
+        localField: 'author',
+        foreignField: '_id',
+        as: 'author'}},
+      {$lookup:
+        {from: 'replies',
+        localField: 'reply',
+        foreignField: '_id',
+        as: 'reply'}},
+      {$unwind: '$author',},
+      // {$unwind:{path: "$reply",preserveNullAndEmptyArrays: true}},
+      {$sort: {createdAt: -1}},
+      {$skip: skip},
+      {$limit: limit},
+      {$lookup:
+        {from: 'comments',
+        localField: '_id',
+        foreignField: 'post',
+        as: 'comments'}},
+      {$lookup: {
           from: 'files',
           localField: 'attachment',
           foreignField: '_id',
           as: 'attachment'
         }
       },
-
       // {
       //   $unwind: {
       //     path: '$attachment',
@@ -145,21 +119,21 @@ router.get('/', util.isLoggedin, async function(req, res) {
           private_check: 1,
           attachment: 1,
           createdAt: 1,
+          attachment: 1,
           commentCount: {
             $size: '$comments'
           },
-          is_reply: 1,
-          re_title: 1,
-          re_author: {
-            username: 1,
-          },
-          re_attachment: 1,
-          re_createdAt: 1
+          reply: 1,
+          rep: {
+            user: 1
+          }
 
         }
       },
     ]).exec();
   }
+
+
 
 
 
@@ -232,7 +206,6 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
       return res.end();
     }
 
-    console.log(email_list)
     if (email_list.length == 1 || !Array.isArray(email_list)) {
       if (email_list[0] == '1') {
         User.find({
@@ -533,11 +506,12 @@ function checkreadPermission(req, res, next) {
 //-------------------------------------REPLY---------------------------------------
 
 // reply
-router.get('/:id/reply', util.isLoggedin, function(req, res) {
-
+router.get('/:id/reply_new', util.isLoggedin, function(req, res) {
 
   var post = req.flash('post')[0];
+  var reply = req.flash('reply')[0];
   var errors = req.flash('errors')[0] || {};
+
   if (!post) {
     Post.findOne({
         _id: req.params.id
@@ -550,110 +524,193 @@ router.get('/:id/reply', util.isLoggedin, function(req, res) {
       })
       .exec(function(err, post) {
         if (err) return res.json(err);
-        res.render('posts/reply', {
+        res.render('posts/reply_new', {
           post: post,
+          reply: reply,
           errors: errors
         });
       });
   } else {
     post._id = req.params.id;
-    res.render('posts/reply', {
+    res.render('posts/reply_new', {
       post: post,
+      reply: reply,
       errors: errors
     });
   }
 });
 
+
+// re new
+router.post('/:id/reply_new', util.isLoggedin, checkPermission, upload.array('attachment'), async function(req, res) {
+
+  var attachment = new Array();
+
+  for (var i = 0; i < req.files.length; i++) {
+    attachment[i] = req.files[i] ? await File.createNewInstance(req.files[i], req.user._id) : undefined;
+  }
+
+
+  req.body.attachment = attachment;
+  req.body.author = req.user._id;
+
+
+  Reply.create(req.body, function(err, reply) {
+
+    if (err) {
+      req.flash('reply', req.body);
+      req.flash('errors', util.parseError(err));
+      return res.redirect('/posts/reply_show' + res.locals.getPostQueryString());
+    }
+    if (attachment[0] != null) {
+      attachment.replyId = reply._id;
+      attachment[0].save();
+    }
+
+
+    const title = reply;
+    const titleId = title._id;
+
+
+  Post.findOneAndUpdate(
+    {
+      _id: req.body.post
+    }, {
+      $push: {
+        "reply": titleId
+      }
+    }, {
+      runValidators: true
+    },
+    function(err, post) {
+      if (err) {
+        req.flash('post', req.body);
+        req.flash('errors', util.parseError(err));
+        return res.redirect('/posts/' + req.params.id + '/edit' + res.locals.getPostQueryString());
+      }
+      res.redirect('/posts/' + req.params.id + res.locals.getPostQueryString());
+    });
+
+
+
+
+
+  //
+  // res.redirect('/posts' + res.locals.getPostQueryString(false, {
+  //   page: 1,
+  //   searchText: ''
+  // }));
+});
+});
+
+
+
+
+
+
+
+
+
+// router.put('/:id/reply', util.isLoggedin, checkPermission, upload.array('newAttachment'), async function(req, res) {
+//   var post = await Post.findOne({
+//     _id: req.params.id
+//   }).populate({
+//     path: 're_attachment',
+//     match: {
+//       isDeleted: false
+//     }
+//   });
+//
+//
+//   req.body.re_author = req.user._id;
+//   var re_attachment = new Array();
+//
+//
+//
+//   for (var i = 0; i < req.files.length; i++) {
+//     if (req.files[i]) {
+//       re_attachment[i] = await File.createNewInstance(req.files[i], req.user._id, req.params.id)
+//     }
+//   }
+//
+//   if (req.files.length == 0) {
+//     re_attachment = post.re_attachment;
+//
+//   }
+//
+//
+//   req.body.re_attachment = re_attachment;
+//
+//
+//   req.body.re_lasteditted = Date.now();
+//
+//
+//   if (post.enterprise == '1') {
+//     post.enterprise = post.enterprise2;
+//   }
+//   Post.findOneAndUpdate({
+//     _id: req.params.id
+//   }, req.body, {
+//     runValidators: true
+//   }, function(err, post) {
+//     if (err) {
+//       req.flash('post', req.body);
+//       req.flash('errors', util.parseError(err));
+//       return res.redirect('/posts/' + req.params.id + '/reply_new/' + res.locals.getPostQueryString());
+//     }
+//     res.redirect('/posts/' + req.params.id + '/reply_show/' + res.locals.getPostQueryString());
+//   });
+// });
+//
+//
+//
+//
+
+
+
+
+
+
+
 // show
-router.get('/:id/reply_show', util.isLoggedin, checkreadPermission, function(req, res) {
+router.get('/:id/reply_show', util.isLoggedin,  function(req, res) {
+  console.log(req.params.id)
+
+  Reply.findOne({
+    _id: req.params.id
+  }, function(err, reply) {
+    if (err) return res.json(err);
+    if (reply.private_check) {
+      if (req.user.auth != 3 && req.user.auth != 2) {
+        return util.noPermission(req, res);
+      }
+    }
+  });
 
   Promise.all([
-      Post.findOne({
+      Reply.findOne({
         _id: req.params.id
-      }).populate({
-        path: 'author',
-        select: ['username', 'email']
       }).populate({
         path: 'attachment',
         match: {
           isDeleted: false
         }
       }).populate({
-        path: 're_attachment',
+        path:'title',
         match: {
           isDeleted: false
         }
-      }),
-
-      Comment.find({
-        post: req.params.id
-      }).sort('createdAt').populate({
-        path: 'author',
-        select: 'username'
       })
     ])
-    .then(([post]) => {
+    .then(([reply]) => {
 
       res.render('posts/reply_show', {
-        post: post,
+        reply: reply,
       });
     })
     .catch((err) => {
       return res.json(err);
     });
-});
-
-
-// re update
-router.put('/:id/reply', util.isLoggedin, checkPermission, upload.array('newAttachment'), async function(req, res) {
-  var post = await Post.findOne({
-    _id: req.params.id
-  }).populate({
-    path: 're_attachment',
-    match: {
-      isDeleted: false
-    }
-  });
-
-
-  req.body.re_author = req.user._id;
-  var re_attachment = new Array();
-
-
-
-  for (var i = 0; i < req.files.length; i++) {
-    if (req.files[i]) {
-      re_attachment[i] = await File.createNewInstance(req.files[i], req.user._id, req.params.id)
-    }
-  }
-
-  if (req.files.length == 0) {
-    re_attachment = post.re_attachment;
-
-  }
-
-
-  req.body.re_attachment = re_attachment;
-
-
-  req.body.re_lasteditted = Date.now();
-
-
-  if (post.enterprise == '1') {
-    post.enterprise = post.enterprise2;
-  }
-  Post.findOneAndUpdate({
-    _id: req.params.id
-  }, req.body, {
-    runValidators: true
-  }, function(err, post) {
-    if (err) {
-      req.flash('post', req.body);
-      req.flash('errors', util.parseError(err));
-      return res.redirect('/posts/' + req.params.id + '/reply/' + res.locals.getPostQueryString());
-    }
-    res.redirect('/posts/' + req.params.id + '/reply_show/' + res.locals.getPostQueryString());
-  });
 });
 
 
