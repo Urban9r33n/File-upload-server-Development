@@ -29,8 +29,6 @@ function createRandomPassword(variable, passwordLength) {
 }
 
 
-
-
 // 본인 Gmail 계정
 const EMAIL = "upload_team@daum.net";
 const EMAIL_PW = "brownie112";
@@ -69,29 +67,50 @@ router.get('/', util.isLoggedin, async function(req, res) {
   if (searchQuery) {
     var count = await Post.countDocuments(searchQuery);
     maxPage = Math.ceil(count / limit);
-    posts = await Post.aggregate([
-      {$match: searchQuery},
-      {$lookup:
-        {from: 'users',
-        localField: 'author',
-        foreignField: '_id',
-        as: 'author'}},
-      {$lookup:
-        {from: 'replies',
-        localField: 'reply',
-        foreignField: '_id',
-        as: 'reply'}},
-      {$unwind: '$author',},
+    posts = await Post.aggregate([{
+        $match: searchQuery
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'author'
+        }
+      },
+      {
+        $lookup: {
+          from: 'replies',
+          localField: 'reply',
+          foreignField: '_id',
+          as: 'reply'
+        }
+      },
+      {
+        $unwind: '$author',
+      },
       // {$unwind:{path: "$reply",preserveNullAndEmptyArrays: true}},
-      {$sort: {createdAt: -1}},
-      {$skip: skip},
-      {$limit: limit},
-      {$lookup:
-        {from: 'comments',
-        localField: '_id',
-        foreignField: 'post',
-        as: 'comments'}},
-      {$lookup: {
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      {
+        $skip: skip
+      },
+      {
+        $limit: limit
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'post',
+          as: 'comments'
+        }
+      },
+      {
+        $lookup: {
           from: 'files',
           localField: 'attachment',
           foreignField: '_id',
@@ -200,13 +219,7 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
       attachment[0].save();
     }
 
-    if (!email_list) {
-      res.write("<script>alert('Please select the email list!')</script>");
-      res.write("<script>window.location='/posts/new" + res.locals.getPostQueryString() + "'</script>");
-      return res.end();
-    }
-
-    if (email_list.length == 1 || !Array.isArray(email_list)) {
+    if (!email_list) {} else if (email_list.length == 1 || !Array.isArray(email_list)) {
       if (email_list[0] == '1') {
         User.find({
             'auth': {
@@ -572,41 +585,26 @@ router.post('/:id/reply_new', util.isLoggedin, checkPermission, upload.array('at
     const titleId = title._id;
 
 
-  Post.findOneAndUpdate(
-    {
-      _id: req.body.post
-    }, {
-      $push: {
-        "reply": titleId
-      }
-    }, {
-      runValidators: true
-    },
-    function(err, post) {
-      if (err) {
-        req.flash('post', req.body);
-        req.flash('errors', util.parseError(err));
-        return res.redirect('/posts/' + req.params.id + '/edit' + res.locals.getPostQueryString());
-      }
-      res.redirect('/posts/' + req.params.id + res.locals.getPostQueryString());
-    });
+    Post.findOneAndUpdate({
+        _id: req.body.post
+      }, {
+        $push: {
+          "reply": titleId
+        }
+      }, {
+        runValidators: true
+      },
+      function(err, post) {
+        if (err) {
+          req.flash('post', req.body);
+          req.flash('errors', util.parseError(err));
+          return res.redirect('/posts/' + req.params.id + '/edit' + res.locals.getPostQueryString());
+        }
+        res.redirect('/posts/' + req.params.id + res.locals.getPostQueryString());
+      });
 
-
-
-
-
-  //
-  // res.redirect('/posts' + res.locals.getPostQueryString(false, {
-  //   page: 1,
-  //   searchText: ''
-  // }));
+  });
 });
-});
-
-
-
-
-
 
 
 
@@ -667,13 +665,8 @@ router.post('/:id/reply_new', util.isLoggedin, checkPermission, upload.array('at
 //
 
 
-
-
-
-
-
 // show
-router.get('/:id/reply_show', util.isLoggedin,  function(req, res) {
+router.get('/:id/reply_show', util.isLoggedin, function(req, res) {
   console.log(req.params.id)
 
   Reply.findOne({
@@ -696,7 +689,7 @@ router.get('/:id/reply_show', util.isLoggedin,  function(req, res) {
           isDeleted: false
         }
       }).populate({
-        path:'title',
+        path: 'title',
         match: {
           isDeleted: false
         }
@@ -712,9 +705,6 @@ router.get('/:id/reply_show', util.isLoggedin,  function(req, res) {
       return res.json(err);
     });
 });
-
-
-
 
 //---------------------------------------------------------------------------------
 
