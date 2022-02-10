@@ -14,7 +14,9 @@
 
 
     <div class="wrapper">
+      <a href="/">
       <img class="inzi logo2" src="image/INZI_logo4.png" alt="INZI logo">
+      </a>
       <br />
       <form class="login" action="/login" method="post">
         <p class="title">로그인</p>
@@ -39,13 +41,19 @@
         <div class="invalid-feedback d-block"><%= errors.login %></div>
         <% } %>
 
-        <a href="#">Forgot your password?</a>
+        <!-- <a href="#">비밀번호를 잊으셨나요?</a> -->
         <button>
           <i class="spinner"></i>
           <span class="state"type="submit" value="Submit">Log in</span>
         </button>
       </form>
-      <footer><a target="" href="/">INZI_VDX</a></footer>
+      <footer>
+        <a target="" href="/">Go Back to main</a>
+        <br />
+        <br />
+        <h6>계정 관련 등의 문의사항은 설계팀으로 연락 바랍니다.</h6>
+
+      </footer>
       </p>
     </div>
 

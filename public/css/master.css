@@ -120,7 +120,7 @@ body {
 }
 
 .container {
-  max-width: 70%;
+  max-width: 80%;
 }
 
 .breadcrumb-item {
@@ -136,6 +136,7 @@ body {
 }
 
 .board-table .title {
+  width: 100%;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -147,7 +148,7 @@ body {
 }
 
 .board-table .numId {
-  width: 100px;
+  width: 20%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -157,7 +158,7 @@ body {
 .board-table .nation,
 .board-table .enterprise,
 .board-table .sender {
-  width: 100px;
+  width: 50%;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -165,7 +166,7 @@ body {
 }
 
 .board-table .numId_daily {
-  width: 100px;
+  width: 50%;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -173,14 +174,22 @@ body {
 }
 
 .board-table .code {
-  width: 190px;
+  width: 50%;
   text-align: center;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .board-table .author,
 .board-table .date {
-  width: 100px;
+  width: 50%;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 }
 
 .board-table .title-container:hover .title-comments,

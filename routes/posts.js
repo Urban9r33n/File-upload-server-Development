@@ -530,7 +530,7 @@ router.get('/:id/reply_new', util.isLoggedin, function(req, res) {
         _id: req.params.id
       })
       .populate({
-        path: 're_attachment',
+        path: 'attachment',
         match: {
           isDeleted: false
         }
@@ -555,7 +555,7 @@ router.get('/:id/reply_new', util.isLoggedin, function(req, res) {
 
 
 // re new
-router.post('/:id/reply_new', util.isLoggedin, checkPermission, upload.array('attachment'), async function(req, res) {
+router.post('/:id/reply_new', util.isLoggedin, upload.array('attachment'), async function(req, res) {
 
   var attachment = new Array();
 
@@ -585,6 +585,7 @@ router.post('/:id/reply_new', util.isLoggedin, checkPermission, upload.array('at
     const titleId = title._id;
 
 
+
     Post.findOneAndUpdate({
         _id: req.body.post
       }, {
@@ -598,76 +599,161 @@ router.post('/:id/reply_new', util.isLoggedin, checkPermission, upload.array('at
         if (err) {
           req.flash('post', req.body);
           req.flash('errors', util.parseError(err));
-          return res.redirect('/posts/' + req.params.id + '/edit' + res.locals.getPostQueryString());
+          return res.redirect('/posts/' + req.params.id + '/reply_edit' + res.locals.getPostQueryString());
         }
-        res.redirect('/posts/' + req.params.id + res.locals.getPostQueryString());
+        res.redirect('/posts/' + req.params.id + '/reply_show' + res.locals.getPostQueryString());
       });
 
   });
 });
 
 
+//reply edit
+
+router.get('/:id/reply_edit', util.isLoggedin, async function(req, res) {
+  var post = req.flash('post')[0];
+  var reply = req.flash('reply')[0];
+  var err = req.flash('errors')[0] || {};
+
+  reply = await Reply.findOne({
+    _id: req.params.id
+  }).populate({
+    path: 'attachment',
+    match: {
+      isDeleted: false
+    }
+  }).exec()
+
+  var searchQuery = {
+    _id: reply.motherpost
+  };
 
 
-// router.put('/:id/reply', util.isLoggedin, checkPermission, upload.array('newAttachment'), async function(req, res) {
-//   var post = await Post.findOne({
-//     _id: req.params.id
-//   }).populate({
-//     path: 're_attachment',
-//     match: {
-//       isDeleted: false
-//     }
-//   });
-//
-//
-//   req.body.re_author = req.user._id;
-//   var re_attachment = new Array();
-//
-//
-//
-//   for (var i = 0; i < req.files.length; i++) {
-//     if (req.files[i]) {
-//       re_attachment[i] = await File.createNewInstance(req.files[i], req.user._id, req.params.id)
-//     }
-//   }
-//
-//   if (req.files.length == 0) {
-//     re_attachment = post.re_attachment;
-//
-//   }
-//
-//
-//   req.body.re_attachment = re_attachment;
-//
-//
-//   req.body.re_lasteditted = Date.now();
-//
-//
-//   if (post.enterprise == '1') {
-//     post.enterprise = post.enterprise2;
-//   }
-//   Post.findOneAndUpdate({
-//     _id: req.params.id
-//   }, req.body, {
-//     runValidators: true
-//   }, function(err, post) {
-//     if (err) {
-//       req.flash('post', req.body);
-//       req.flash('errors', util.parseError(err));
-//       return res.redirect('/posts/' + req.params.id + '/reply_new/' + res.locals.getPostQueryString());
-//     }
-//     res.redirect('/posts/' + req.params.id + '/reply_show/' + res.locals.getPostQueryString());
-//   });
-// });
-//
-//
-//
-//
+  if (!post) {
+    post = await Post.aggregate([{
+        $match: searchQuery
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'author'
+        }
+      },
+      {
+        $lookup: {
+          from: 'replies',
+          localField: 'reply',
+          foreignField: '_id',
+          as: 'reply'
+        }
+      },
+      {
+        $unwind: '$author',
+      },
+      // {$unwind:{path: "$reply",preserveNullAndEmptyArrays: true}},
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      {
+        $lookup: {
+          from: 'files',
+          localField: 'attachment',
+          foreignField: '_id',
+          as: 'attachment'
+        }
+      },
+      // {
+      //   $unwind: {
+      //     path: '$attachment',
+      //     preserveNullAndEmptyArrays: true
+      //   }
+      // },
+    ]).exec();
+
+
+
+
+
+    res.render('posts/reply_edit', {
+      post: post,
+      reply: reply,
+      errors: err
+    });
+
+  } else {
+    post._id = reply.motherpost;
+    res.render('posts/reply_edit', {
+      post: post,
+      reply: reply,
+      errors: err
+    });
+  }
+});
+
+
+
+
+router.put('/:id/reply_edit', util.isLoggedin, upload.array('newAttachment'), async function(req, res) {
+  const reply = await Reply.findOne({
+    _id: req.params.id
+  }).populate({
+    path: 'attachment',
+    match: {
+      isDeleted: false
+    }
+  });
+
+
+
+  req.body.author = req.user._id;
+  var attachment = new Array();
+
+
+
+  for (var i = 0; i < req.files.length; i++) {
+    if (req.files[i]) {
+      attachment[i] = await File.createNewInstance(req.files[i], req.user._id, req.params.id)
+    }
+  }
+
+  if (req.files.length == 0) {
+    attachment = reply.attachment;
+
+  }
+
+
+  req.body.attachment = attachment;
+
+
+  req.body.lasteditted = Date.now();
+
+
+  Reply.findOneAndUpdate({
+    _id: req.params.id
+  }, req.body, {
+    runValidators: true
+  }, function(err, reply) {
+    if (err) {
+      req.flash('reply', req.body);
+      req.flash('errors', util.parseError(err));
+      return res.redirect('/posts/' + req.params.id + '/reply_edit/' + res.locals.getPostQueryString());
+    }
+    res.redirect('/posts/' + req.params.id + '/reply_show/' + res.locals.getPostQueryString());
+  });
+});
+
+
+
+
 
 
 // show
 router.get('/:id/reply_show', util.isLoggedin, function(req, res) {
-  console.log(req.params.id)
+
 
   Reply.findOne({
     _id: req.params.id
@@ -705,6 +791,19 @@ router.get('/:id/reply_show', util.isLoggedin, function(req, res) {
       return res.json(err);
     });
 });
+
+
+
+// router.post('/:id/reply_delete', util.isLoggedin, function(req, res) {
+//
+//
+//   replyid = req.params.id;
+//
+//   Reply.findByIdAndDelete(replyid, (err, data) => {});
+//
+//
+// });
+//
 
 //---------------------------------------------------------------------------------
 

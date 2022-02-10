@@ -17,16 +17,18 @@
 
   <div class="container mb-3">
 
+
+
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb p-1 pl-2 pr-2">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item"><a href="/posts">Board</a></li>
-        <li class="breadcrumb-item"><a href="/posts/<%= post._id %>">re:<%= post.title %></a></li>
-        <li class="breadcrumb-item active" aria-current="page">Edit Post</li>
+        <li class="breadcrumb-item"><%= reply.title %></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit Reply</li>
       </ol>
     </nav>
 
-    <form action="/posts/<%= post._id %>/reply_new<%= getPostQueryString() %>" enctype="multipart/form-data" method="post">
+    <form action="/posts/<%= reply._id %>/reply_edit?_method=put<%= getPostQueryString(true) %>" enctype="multipart/form-data" method="post">
 
 
 
@@ -39,7 +41,7 @@
         </div>
 
         <div class="col-md-10">
-          <input type="text" id="title" autocomplete="off" name="title" value="Re:<%= post.title %>" placeholder="메일제목" class="form-control <%= (errors.title)?'is-invalid':'' %>">
+          <input type="text" id="title" autocomplete="off" name="title" value="<%= reply.title %>" placeholder="메일제목" class="form-control <%= (errors.title)?'is-invalid':'' %>">
         </div>
         <% if(errors.title){ %>
         <span class="invalid-feedback"><%= errors.title.message %></span>
@@ -54,30 +56,44 @@
 
         <div class="col-md-4">
           <div class="form-group">
-            <input type="file" name="attachment" class="form-control-file" id="attachment" multiple>
+
+
+            <% if(reply.attachment){ %>
+
+            <div class="input-group" id="currentAttachemnt">
+              <% for(var i = 0; i < reply.attachment.length; i++){ %>
+                <input type="hidden" id="attachment" name="attachment" value="<%= reply.attachment[i]?reply.attachment._id:'' %>">
+              <div class="col-md-8">
+                <input type="text" class="form-control" value="<%= reply.attachment[i].originalFileName %>" readonly />
+              </div>
+
+              <% console.log("=============== ^") %>
+                          <% console.log(reply) %>
+                          <% console.log("===============*") %>
+              <% } %>
+              <div class="col-md-4">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" onclick="$('#attachment').val('');$('#currentAttachemnt').hide();$('#newAttachment').removeClass('d-none');">첨부파일 삭제</button>
+                </div>
+              </div>
+            </div>
+
+
+
+            <% } %>
+
+            <input type="file" id="newAttachment" class="form-control-file <%= reply.attachment?'d-none':'' %>" name="newAttachment" multiple>
           </div>
         </div>
-
-        <div class="col-md-2">
-          <!-- <div class="form-group">
-            <label for="date">수신 날짜</label>
-
-          </div> -->
-        </div>
-
-        <div class="col-md-4">
-        </div>
-
       </div>
 
 
-
       <div class="form-group">
-        <input type="hidden" id="post" autocomplete="off" name="post" value="<%= post._id %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
-          <input type="hidden" id="motherpost" autocomplete="off" name="motherpost" value="<%= post._id %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
-        <input type="hidden" id="post" autocomplete="off" name="private_check" value="<%= post.private_check %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
+        <input type="hidden" id="post" autocomplete="off" name="post" value="<%= reply.motherpost %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
+        <input type="hidden" id="motherpost" autocomplete="off" name="motherpos" value="<%= reply.motherpost %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
+        <input type="hidden" id="post" autocomplete="off" name="private_check" value="<%= post[0].private_check %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
 
-        <textarea id="summernote" name="body" class="form-control <%= (errors.body)?'is-invalid':'' %>"></textarea>
+        <textarea id="summernote" name="body" class="form-control <%= (errors.body)?'is-invalid':'' %>"><%- reply.body %></textarea>
 
         <script>
           $(document).ready(function() {

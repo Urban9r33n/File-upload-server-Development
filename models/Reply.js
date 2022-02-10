@@ -25,6 +25,10 @@ var replySchema = mongoose.Schema({
   created: {
     type: Date,
     default: Date.now
+  },
+  motherpost:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'post'
   }
 
 });

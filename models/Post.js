@@ -73,28 +73,7 @@ var postSchema = mongoose.Schema({
   is_reply: {
     type: Boolean,
     default: false
-  },
-  re_title: {
-    type: String,
-    default: "Re:"
-  },
-  re_author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-  },
-  re_body: {
-    type: String,
-    default: "답글입니다."
-  },
-  re_attachment: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'file',
-  }],
-  re_lasteditted: {
-    type: Date,
-    default: Date.now
   }
-
 });
 
 

@@ -24,7 +24,7 @@
           <th scope="col" class="code">Code</th>
           <th scope="col" class="sender">보낸이</th>
           <th scope="col" class="title">메일제목 </th>
-          <th scope="col" class="author">Author</th>
+          <th scope="col" class="author">글쓴이</th>
           <th scope="col" class="date">Date</th>
         </tr>
       </thead>
@@ -66,7 +66,7 @@
           </td>
 
           <td class="author">
-            <a href="/posts<%= getPostQueryString(false, { searchType:'author!', searchText:post.author.username }) %>">
+            <a href="/posts<%= getPostQueryString(false, { searchType:'author!', searchText:post.author.username }) %>" style="text-decoration:none; color:grey;">
               <div data-search-highlight="author" class="ellipsis"><%= post.author ? post.author.username : "" %></div>
             </a>
           </td>
@@ -104,7 +104,9 @@
             </a>
           </td>
 
-
+          <!-- <td class="author">
+           <div data-search-highlight="author" class="ellipsis"><%= post[0].reply[0] ? post[0].reply[0].author.username: "" %></div>
+         </td>  -->
 
           <td>
           </td>
@@ -168,7 +170,7 @@
               <option value="title,body" <%= searchType=='title,body'?'selected':'' %>>제목, 본문</option>
               <option value="title" <%= searchType=='title'?'selected':'' %>>제목</option>
               <option value="body" <%= searchType=='body'?'selected':'' %>>본문</option>
-              <option value="author" <%= searchType=='author'?'selected':'' %>>Author</option>
+              <option value="author" <%= searchType=='author'?'selected':'' %>>글쓴이</option>
               <option value="nation" <%= searchType=='nation'?'selected':'' %>>국가</option>
               <option value="enterprise" <%= searchType=='enterprise'?'selected':'' %>>고객사</option>
               <option value="section" <%= searchType=='section'?'selected':'' %>>내용구분</option>
