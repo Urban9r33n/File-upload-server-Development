@@ -23,6 +23,9 @@
 
     <form action="/users" method="post">
       <%- include('../partials/teams') %>
+      <% if(errors.team){ %>
+      <span class="invalid-feedback"><%= errors.team.message %></span>
+      <% } %>
 
 
       <div class="form-group row">
@@ -88,7 +91,10 @@
 
       <div class="form-group">
         <button type="submit" class="btn btn-dark">Submit</button>
+        <button type="button" class="btn btn-dark" onclick="location.href='/'">Back</button>
+
       </div>
+
 
     </form>
 

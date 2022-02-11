@@ -205,13 +205,24 @@ router.get('/history', util.isLoggedin,checkADPermission, async function(req, re
 // }
 
 
+
+
 //edit
 router.get('/:username', util.isLoggedin, checkADPermission, function(req, res){
   var user = req.flash('user')[0];
   var errors = req.flash('errors')[0] || {};
   if(!user){
     User.findOne({username:req.params.username}, function(err, user){
-      if(err) return res.json(err);
+      if(err) {
+        console.log("===Error: edit-error admin.js===");
+        console.log(err);
+        return res.render('error/404');
+      }
+      if(!user){
+        console.log("===Error: edit-error admin.js===");
+        console.log(err);
+        return res.render('error/404');
+    }
       res.render('admin/edit', { username:req.params.username, user:user, errors:errors });
     });
   }
@@ -227,7 +238,11 @@ router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, 
   User.findOne({username:req.params.username})
     .select('password')
     .exec(function(err, user){
-      if(err) return res.json(err);
+      if(err) {
+        console.log("===Error: update-error admin.js===");
+        console.log(err);
+        return res.render('error/404');
+      }
 
       // update user object
       user.originalPassword = user.password;
@@ -279,7 +294,12 @@ router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, 
 //req. ~~ is current user.
 function checkADPermission(req, res, next){
   User.findOne({username:req.params.username}, function(err, user){
-    if(err) return res.json(err);
+    if(err) {
+      console.log("===Error: permission error admin.js===");
+      console.log(err);
+      return res.render('error/404');
+    }
+
     if(req.user.auth != '3') return util.noPermission(req, res);
 
     next();

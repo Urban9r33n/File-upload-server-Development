@@ -1,7 +1,7 @@
 <div class="form-group row">
   <label for="team" class="col-sm-3 col-form-label">부서</label>
   <div class="col-sm-9">
-    <select class="form-control" id="team" name="team" value="<%= user.team %>" <%= (errors.team)?'is-invalid':'' %>">
+    <select class="form-control <%= (errors.team)?'is-invalid':'' %>" id="team" name="team" value="<%= user.team %>" <%= (errors.team)?'is-invalid':'' %>">
       <option selected disabled hidden>=== 부서를 선택하세요 ===</option>
       <option disabled>=== 연구소 ===</option>
       <option value="설계팀">설계팀</option>
@@ -21,5 +21,6 @@
     <% if(errors.team){ %>
     <span class="invalid-feedback"><%= errors.team.message %></span>
     <% } %>
+
   </div>
 </div>

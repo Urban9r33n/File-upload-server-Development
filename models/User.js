@@ -10,26 +10,26 @@ var userSchema = mongoose.Schema({
   },
   username: {
     type: String,
-    required: [true, 'Username is required!'],
-    match: [/^.{4,12}$/, 'Should be 4-12 characters!'],
+    required: [true, '아이디를 입력하세요.'],
+    match: [/^.{4,12}$/, '아이디는 4-12자여야 합니다.'],
     trim: true,
     unique: true
   },
   password: {
     type: String,
-    required: [true, 'Password is required!'],
+    required: [true, '비밀번호를 입력하세요.'],
     select: false
   },
   name: {
     type: String,
-    required: [true, 'Name is required!'],
-    match: [/^.{2,5}$/, 'Should be 2-5 characters!'],
+    required: [true, '이름을 입력하세요.'],
+    match: [/^.{2,10}$/, '이름은 2-10자여야 합니다'],
     trim: true
   },
   email: {
     type: String,
-    required: [true, 'Email is required!'],
-    match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Should be a vaild email address!'],
+    required: [true, '이메일을 입력하세요.'],
+    match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, '잘못된 형식의 이메일 입니다.'],
     trim: true
   },
   auth: {

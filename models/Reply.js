@@ -8,7 +8,8 @@ var replySchema = mongoose.Schema({
   },
   title: {
     type: String,
-    default: "Re:"
+    default: "Re:",
+    required: [true, '제목을 입력하세요!']
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
@@ -16,7 +17,8 @@ var replySchema = mongoose.Schema({
   },
   body: {
     type: String,
-    default: "답글입니다."
+    default: "답글입니다.",
+    required: [true, '내용을 입력하세요!']
   },
   attachment: [{
     type: mongoose.Schema.Types.ObjectId,

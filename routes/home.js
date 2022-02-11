@@ -14,29 +14,52 @@ router.get('/main', util.isLoggedin, function(req, res) {
   });
 });
 
-// Home
+// Home - 메인 페이지
 router.get('/', function(req, res) {
   res.render('home/welcome');
 });
-router.get('/about', function(req, res) {
-  res.render('home/about');
-});
 
-// Login
+
+// Login - 일반 메인 페이지로 로그인
 router.get('/login', function(req, res) {
   var username = req.flash('username')[0];
   var errors = req.flash('errors')[0] || {};
   res.render('home/login', {
+    post: 0,
     username: username,
     errors: errors
   });
 });
 
-// Post Login
+// Login - 이메일 링크 클릭 또는 바로 포스트로 이동시,
+// 로그인 이후 해당 포스트로 이동.
+router.get('/login/:id', function(req, res) {
+  var username = req.flash('username')[0];
+  var errors = req.flash('errors')[0] || {};
+
+  var post = req.params.id;
+
+  if(post = 'undefined'){
+    return res.render('home/login', {
+      post: 0,
+      username: username,
+      errors: errors
+    });
+  }
+  res.render('home/login/', {
+    post: post,
+    username: username,
+    errors: errors
+  });
+});
+
+
+// Post Login - 로그인 정보 전송
 router.post('/login',
   function(req, res, next) {
     var errors = {};
     var isValid = true;
+
 
 
     if (!req.body.username) {
@@ -53,7 +76,7 @@ router.post('/login',
       });
 
       isValid = false;
-      errors.username = 'Username is required!';
+      errors.username = '아이디 잘못됨!';
     }
     if (!req.body.password) {
 
@@ -69,7 +92,7 @@ router.post('/login',
       });
 
       isValid = false;
-      errors.password = 'Password is required!';
+      errors.password = '비밀번호를 입력하세요';
     }
 
     if (isValid) {
@@ -88,13 +111,23 @@ router.post('/login',
       res.redirect('/login');
     }
   },
-  passport.authenticate('local-login', {
-    successRedirect: '/main' ,
+  passport.authenticate('local-login',  {
     failureRedirect: '/login'
-  })
+  }),
+  function(req, res) {
+
+        var nextPage = '/main'
+
+        if (req.body.post != 0) {
+          var nextPage = '/posts/' + req.body.post
+        }
+
+
+    res.redirect(nextPage);
+  }
 );
 
-// Logout
+// Logout - 로그아웃 정보 전송
 router.get('/logout', function(req, res) {
 
   Log.create({

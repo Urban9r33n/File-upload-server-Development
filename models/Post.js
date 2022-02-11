@@ -6,11 +6,11 @@ var Daily_Counter = require('./Dailycounter');
 var postSchema = mongoose.Schema({
   title: {
     type: String,
-    required: [true, 'Title is required!']
+    required: [true, '제목을 입력하세요!']
   },
   body: {
     type: String,
-    required: [true, 'Body is required!']
+    required: [true, '내용을 입력하세요!']
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,

@@ -4,6 +4,11 @@ var multer = require('multer');
 var upload = multer({
   dest: 'uploadedFiles/'
 });
+
+const bcrypt = require("bcryptjs")
+
+
+
 var Post = require('../models/Post');
 var Reply = require('../models/Reply');
 var User = require('../models/User');
@@ -371,6 +376,8 @@ router.get('/:id', util.isLoggedin, checkreadPermission, function(req, res) {
         }
       }),
 
+
+
       Comment.find({
         post: req.params.id
       }).sort('createdAt').populate({
@@ -382,6 +389,7 @@ router.get('/:id', util.isLoggedin, checkreadPermission, function(req, res) {
       post.views++;
       post.save();
       var commentTrees = util.convertToTrees(comments, '_id', 'parentComment', 'childComments');
+
       res.render('posts/show', {
         post: post,
         commentTrees: commentTrees,
@@ -390,7 +398,9 @@ router.get('/:id', util.isLoggedin, checkreadPermission, function(req, res) {
       });
     })
     .catch((err) => {
-      return res.json(err);
+      console.log("Error: - posts.js")
+      console.log(err)
+      return res.render('error/404');
     });
 });
 
@@ -409,7 +419,11 @@ router.get('/:id/edit', util.isLoggedin, checkPermission, function(req, res) {
         }
       })
       .exec(function(err, post) {
-        if (err) return res.json(err);
+        if (err) {
+          console.log("Error: Edit Failed - posts.js");
+          console.log(err);
+          return res.render('error/404');
+        }
         res.render('posts/edit', {
           post: post,
           errors: errors
@@ -476,12 +490,33 @@ router.put('/:id', util.isLoggedin, checkPermission, upload.array('newAttachment
 
 // destroy
 router.delete('/:id', util.isLoggedin, checkPermission, function(req, res) {
-  Post.deleteOne({
-    _id: req.params.id
-  }, function(err) {
-    if (err) return res.json(err);
-    res.redirect('/posts' + res.locals.getPostQueryString());
-  });
+  var id = req.body.id;
+  var password = req.body.password;
+
+  Erase.findOne({
+    username: "ForDeleting"
+  }, function(err, usr) {
+    if (!usr) {
+      return  res.send('<script>alert("아직 글 삭제 비밀번호가 지정되지 않았습니다."); window.location.href = "/"; </script>');
+    if (err) {
+      console.log("-----------------------------------------------")
+      console.log(err)
+      console.log("-----------------------------------------------")
+      return res.render('error/404');
+    }
+
+
+    Post.deleteOne({
+      _id: req.params.id
+    }, function(err) {
+      if (err) {
+        console.log("Error: Delete Failed - posts.js");
+        console.log(err);
+        return res.render('error/404');
+      }
+      res.redirect('/posts' + res.locals.getPostQueryString());
+    });
+  }});
 });
 
 module.exports = router;
@@ -491,7 +526,18 @@ function checkPermission(req, res, next) {
   Post.findOne({
     _id: req.params.id
   }, function(err, post) {
-    if (err) return res.json(err);
+    if (!post) {
+      console.log("-----------------------------------------------")
+      console.log("Error: checkreadPermission - no posts - posts.js")
+      console.log("-----------------------------------------------")
+      return res.render('error/404');
+    }
+    if (err) {
+      console.log("-----------------------------------------------")
+      console.log(err)
+      console.log("-----------------------------------------------")
+      return res.render('error/404');
+    }
     if ((post.author != req.user.id) && (req.user.auth != 3)) return util.noPermission(req, res);
 
     next();
@@ -502,7 +548,18 @@ function checkreadPermission(req, res, next) {
   Post.findOne({
     _id: req.params.id
   }, function(err, post) {
-    if (err) return res.json(err);
+    if (!post) {
+      console.log("-----------------------------------------------")
+      console.log("Error: checkreadPermission - no posts - posts.js")
+      console.log("-----------------------------------------------")
+      return res.render('error/404');
+    }
+    if (err) {
+      console.log("-----------------------------------------------")
+      console.log(err)
+      console.log("-----------------------------------------------")
+      return res.render('error/404');
+    }
     if (post.private_check) {
       if (req.user.auth != 3 && req.user.auth != 2) {
         return util.noPermission(req, res);
@@ -536,7 +593,11 @@ router.get('/:id/reply_new', util.isLoggedin, function(req, res) {
         }
       })
       .exec(function(err, post) {
-        if (err) return res.json(err);
+        if (err) {
+          console.log("Error: No such type of reply - posts.js");
+          console.log(err);
+          return res.render('error/404');
+        }
         res.render('posts/reply_new', {
           post: post,
           reply: reply,
@@ -599,9 +660,18 @@ router.post('/:id/reply_new', util.isLoggedin, upload.array('attachment'), async
         if (err) {
           req.flash('post', req.body);
           req.flash('errors', util.parseError(err));
-          return res.redirect('/posts/' + req.params.id + '/reply_edit' + res.locals.getPostQueryString());
+          res.render('posts/reply_edit' + res.locals.getPostQueryString(), {
+            post: post,
+            reply: reply,
+            errors: err
+          });
         }
-        res.redirect('/posts/' + req.params.id + '/reply_show' + res.locals.getPostQueryString());
+
+        res.render('posts/reply_show' + res.locals.getPostQueryString(), {
+          post: post,
+          reply: reply,
+          errors: err
+        });
       });
 
   });
@@ -696,7 +766,7 @@ router.get('/:id/reply_edit', util.isLoggedin, async function(req, res) {
 
 
 
-
+//edit
 router.put('/:id/reply_edit', util.isLoggedin, upload.array('newAttachment'), async function(req, res) {
   const reply = await Reply.findOne({
     _id: req.params.id
@@ -740,9 +810,13 @@ router.put('/:id/reply_edit', util.isLoggedin, upload.array('newAttachment'), as
     if (err) {
       req.flash('reply', req.body);
       req.flash('errors', util.parseError(err));
-      return res.redirect('/posts/' + req.params.id + '/reply_edit/' + res.locals.getPostQueryString());
+      res.render('posts/reply_edit' + res.locals.getPostQueryString(), {
+        reply: reply,
+        errors: err
+      });
     }
-    res.redirect('/posts/' + req.params.id + '/reply_show/' + res.locals.getPostQueryString());
+    res.redirect('/posts/' + req.params.id + '/reply_show' + res.locals.getPostQueryString());
+
   });
 });
 
@@ -758,7 +832,11 @@ router.get('/:id/reply_show', util.isLoggedin, function(req, res) {
   Reply.findOne({
     _id: req.params.id
   }, function(err, reply) {
-    if (err) return res.json(err);
+    if (err) {
+      console.log("Error: No reply - posts.js");
+      console.log(err);
+      return res.render('error/404');
+    }
     if (reply.private_check) {
       if (req.user.auth != 3 && req.user.auth != 2) {
         return util.noPermission(req, res);
@@ -788,22 +866,61 @@ router.get('/:id/reply_show', util.isLoggedin, function(req, res) {
       });
     })
     .catch((err) => {
-      return res.json(err);
+
+      console.log("Error: Edit Failed - posts.js");
+      console.log(err);
+      return res.render('error/404');
+
     });
 });
 
 
+//답글 삭제
 
-// router.post('/:id/reply_delete', util.isLoggedin, function(req, res) {
-//
-//
-//   replyid = req.params.id;
-//
-//   Reply.findByIdAndDelete(replyid, (err, data) => {});
-//
-//
-// });
-//
+router.post('/:id/reply_delete', util.isLoggedin, function(req, res) {
+
+  var attachment = new Array();
+
+  var replyid = req.params.id;
+  var postid = req.body.post;
+
+
+
+  Reply.findById(req.params.id, function(err, reply) {
+    if (err) {
+      console.log("Error: reply - deelete error - posts.js");
+      console.log(err);
+      return res.render('error/404');
+    }
+
+
+    for (var i = 0; i < reply.attachment.length; i++) {
+      console.log(reply.attachment[i]);
+      File.findByIdAndDelete(reply.attachment[i], (err, data) => {}, function(err, reply) {
+        if (err) {
+          console.log("Error: reply - deelete error - posts.js");
+          console.log(err);
+          return res.render('error/404');
+        }
+      });
+    }
+  });
+
+
+  Reply.findByIdAndDelete(replyid, (err, data) => {
+
+  }, function(err, reply) {
+    if (err) {
+      console.log("Error: reply - deelete error - posts.js");
+      console.log(err);
+      return res.render('error/404');
+    }
+    return res.redirect('/');
+  });
+  res.redirect('/');
+});
+
+
 
 //---------------------------------------------------------------------------------
 

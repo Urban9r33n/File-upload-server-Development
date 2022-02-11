@@ -4,7 +4,11 @@ var File = require('../models/File');
 
 router.get('/:serverFileName/:originalFileName', function(req, res){
   File.findOne({serverFileName:req.params.serverFileName, originalFileName:req.params.originalFileName}, function(err, file){
-    if(err) return res.json(err);
+  if (err) {
+      console.log("Error: Comment find - posts.js");
+      console.log(err);
+      return res.render('error/404');
+    }
 
     var stream = file.getFileStream();
     if(stream){

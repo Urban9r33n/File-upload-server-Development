@@ -3,7 +3,7 @@
 
 <head>
   <%- include('../partials/main_head') %>
-  <link rel="stylesheet" href="css/login/login_styles.min.css">
+  <link rel="stylesheet" href="/css/login/login_styles.min.css">
 
 </head>
 
@@ -15,9 +15,11 @@
 
     <div class="wrapper">
       <a href="/">
-      <img class="inzi logo2" src="image/INZI_logo4.png" alt="INZI logo">
+      <img class="inzi logo2" src="/image/INZI_logo4.png" alt="INZI logo">
       </a>
       <br />
+      
+
       <form class="login" action="/login" method="post">
         <p class="title">로그인</p>
         <input type="text" placeholder="Username" autofocus id="username" name="username" value="<%= username %>" class="form-control <%= (errors.username)?'is-invalid':'' %>">
@@ -46,12 +48,19 @@
           <i class="spinner"></i>
           <span class="state"type="submit" value="Submit">Log in</span>
         </button>
+
+        <input type="hidden" id="post" name="post" value=<%= post %>>
       </form>
       <footer>
+
         <a target="" href="/">Go Back to main</a>
         <br />
         <br />
-        <h6>계정 관련 등의 문의사항은 설계팀으로 연락 바랍니다.</h6>
+        <h5>지속적으로 로그인 실패시 위 링크를 통해 메인페이지로 이동한 후 다시 로그인을 시도하세요.</h5>
+
+        <br />
+
+        <h6>이 외 계정 관련 등의 문의사항은 설계팀으로 연락 바랍니다.</h6>
 
       </footer>
       </p>
