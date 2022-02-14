@@ -105,9 +105,10 @@
           </td>
 
           <td>
+            <%= post.reply[j] ? post.reply[j].author : "" %>
           </td>
         </tr>
-  <% } %>
+        <% } %>
         <% } %>
         <% }) %>
       </tbody>

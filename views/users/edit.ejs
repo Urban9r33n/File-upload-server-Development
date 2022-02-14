@@ -28,13 +28,13 @@
       </hr>
 
 
-      <%- include('../partials/teams') %>
+      <!-- <%- include('../partials/teams') %> -->
 
 
       <div class="form-group row">
         <label for="username" class="col-sm-3 col-form-label">Username(ID)*</label>
         <div class="col-sm-9">
-          <input type="text" id="username" name="username" value="<%= user.username %>" class="form-control <%= (errors.username)?'is-invalid':'' %>">
+          <input type="text" id="username" name="username" value="<%= user.username %>" class="form-control <%= (errors.username)?'is-invalid':'' %>" readonly>
           <% if(errors.username){ %>
           <span class="invalid-feedback"><%= errors.username.message %></span>
           <% } %>
@@ -44,7 +44,7 @@
       <div class="form-group row">
         <label for="name" class="col-sm-3 col-form-label">이름*</label>
         <div class="col-sm-9">
-          <input type="text" id="name" name="name" value="<%= user.name %>" class="form-control <%= (errors.name)?'is-invalid':'' %>">
+          <input type="text" id="name" name="name" value="<%= user.name %>" class="form-control <%= (errors.name)?'is-invalid':'' %>" readonly>
           <% if(errors.name){ %>
           <span class="invalid-feedback"><%= errors.name.message %></span>
           <% } %>
@@ -54,7 +54,7 @@
       <div class="form-group row">
         <label for="email" class="col-sm-3 col-form-label">Email</label>
         <div class="col-sm-9">
-          <input type="text" id="email" name="email" value="<%= user.email %>" class="form-control <%= (errors.email)?'is-invalid':'' %>">
+          <input type="text" id="email" name="email" value="<%= user.email %>" class="form-control <%= (errors.email)?'is-invalid':'' %>" readonly>
           <% if(errors.email){ %>
           <span class="invalid-feedback"><%= errors.email.message %></span>
           <% } %>

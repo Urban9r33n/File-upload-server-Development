@@ -52,7 +52,7 @@ router.get('/:username/edit', util.isLoggedin, checkPermission, function(req, re
     }, function(err, user) {
       if (err) {
         // if(err) return res.json(err);
-        console.log("Error: Comment find - posts.js");
+        console.log("Error: username couldn't find - posts.js");
         console.log(err);
         return res.render('error/404');
       }
@@ -80,7 +80,7 @@ router.put('/:username', util.isLoggedin, checkPermission, function(req, res, ne
     .exec(function(err, user) {
       if (err) {
         // if(err) return res.json(err);
-        console.log("Error: Comment find - posts.js");
+        console.log("Error: update failed - posts.js");
         console.log(err);
         return res.render('error/404');
       }

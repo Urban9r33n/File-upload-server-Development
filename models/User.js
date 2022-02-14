@@ -100,11 +100,15 @@ userSchema.path('password').validate(function(v) {
     }
   }
 
+
+
+
+
   // update user
   if (!user.isNew) {
     if (!user.currentPassword) {
       user.invalidate('currentPassword', 'Current Password is required!');
-    } else if (false) { //compare password here if needed
+    } else if (!bcrypt.compareSync(user.currentPassword, user.originalPassword)) { //compare password here if needed
       user.invalidate('currentPassword', 'Current Password is invalid!');
     }
 

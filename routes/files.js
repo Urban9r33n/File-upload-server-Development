@@ -13,9 +13,10 @@ router.get('/:serverFileName/:originalFileName', function(req, res){
     var stream = file.getFileStream();
     if(stream){
       res.writeHead(200, {
-        'Content-Type': 'application/octet-stream',
-        'Content-Disposition': 'attachment; filename=' + file.originalFileName
+        'Content-Type': 'application/octet-stream; charset=utf-8',
+        'Content-Disposition': 'attachment; filename=' + encodeURI(file.originalFileName)
       });
+      //charset-utf-8, encodeURI가 있어여 한글 파일 다운가능
       stream.pipe(res);
     }
     else {
