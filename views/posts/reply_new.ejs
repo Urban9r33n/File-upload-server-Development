@@ -71,64 +71,68 @@
       </div>
 
 
+      <div class="row">
+        <div class="col-md-12">
 
-      <div class="form-group">
-        <input type="hidden" id="post" autocomplete="off" name="post" value="<%= post._id %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
-          <input type="hidden" id="motherpost" autocomplete="off" name="motherpost" value="<%= post._id %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
-        <input type="hidden" id="post" autocomplete="off" name="private_check" value="<%= post.private_check %>" " class="form-control <%= (errors.title)?'is-invalid':'' %>">
 
-        <textarea id="summernote" name="body" class="form-control <%= (errors.body)?'is-invalid':'' %>"></textarea>
+          <div class="form-group">
+            <input type="hidden" id="post" autocomplete="off" name="post" value="<%= post._id %>" " class=" form-control <%= (errors.title)?'is-invalid':'' %>">
+            <input type="hidden" id="motherpost" autocomplete="off" name="motherpost" value="<%= post._id %>" " class=" form-control <%= (errors.title)?'is-invalid':'' %>">
+            <input type="hidden" id="post" autocomplete="off" name="private_check" value="<%= post.private_check %>" " class=" form-control <%= (errors.title)?'is-invalid':'' %>">
 
-        <script>
-          $(document).ready(function() {
-            $('#summernote').summernote({
-              height: 500,
-              minHeight: 500,
-              maxHeight: 500,
-              focus: true,
-              lang: "ko-KR",
-              placeholder: '내용을 입력해주세요.',
-              toolbar: [
-                ['fontname', ['fontname']],
-                ['fontsize', ['fontsize']],
-                ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
-                ['color', ['forecolor', 'color']],
-                ['table', ['table']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['height', ['height']],
-                ['insert', ['link']],
-                ['view', ['fullscreen', 'help']]
-              ],
-              fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', '맑은 고딕', '궁서', '굴림체',
-                '굴림', '돋음체', '바탕체'
-              ],
-              fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36',
-                '50', '72'
-              ]
-            });
-          });
-        </script>
+            <textarea id="summernote" name="body" class="form-control <%= (errors.body)?'is-invalid':'' %>"></textarea>
+
+            <script>
+              $(document).ready(function() {
+                $('#summernote').summernote({
+                  height: 500,
+                  minHeight: 500,
+                  maxHeight: 500,
+                  focus: true,
+                  lang: "ko-KR",
+                  placeholder: '내용을 입력해주세요.',
+                  toolbar: [
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                    ['color', ['forecolor', 'color']],
+                    ['table', ['table']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['insert', ['link']],
+                    ['view', ['fullscreen', 'help']]
+                  ],
+                  fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', '맑은 고딕', '궁서', '굴림체',
+                    '굴림', '돋음체', '바탕체'
+                  ],
+                  fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36',
+                    '50', '72'
+                  ]
+                });
+              });
+            </script>
+          </div>
+
+
+
+          <% if(errors.body){ %>
+          <span class="invalid-feedback"><%= errors.body.message %></span>
+          <% } %>
+
+          <div>
+            <a class="btn btn-dark" href="/posts<%= getPostQueryString() %>">Back</a>
+            <button type="submit" class="btn btn-dark"  onclick="clickedBtn()">Submit</button>
+          </div>
+        </div>
       </div>
 
-
-
-      <% if(errors.body){ %>
-      <span class="invalid-feedback"><%= errors.body.message %></span>
-      <% } %>
-
-      <div>
-        <a class="btn btn-dark" href="/posts<%= getPostQueryString() %>">Back</a>
-        <button type="submit" class="btn btn-dark">Submit</button>
-      </div>
-
-
-  <!-- loading -->
-  <%- include('partials/loading') %>
+      <!-- loading -->
+      <%- include('partials/loading') %>
 
 
 
-</form>
-    </div>
+    </form>
+  </div>
 
 
 </body>

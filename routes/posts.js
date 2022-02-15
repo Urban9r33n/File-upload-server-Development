@@ -88,7 +88,15 @@ router.get('/', util.isLoggedin, async function(req, res) {
           from: 'replies',
           localField: 'reply',
           foreignField: '_id',
-          as: 'reply'
+          as: 'replyObjects'
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'reply.author',
+          foreignField: '_id',
+          as: 'autho'
         }
       },
       {
@@ -158,7 +166,7 @@ router.get('/', util.isLoggedin, async function(req, res) {
   }
 
 
-
+console.log(posts);
 
 
   res.render('posts/index', {
@@ -167,9 +175,35 @@ router.get('/', util.isLoggedin, async function(req, res) {
     maxPage: maxPage,
     limit: limit,
     searchType: req.query.searchType,
-    searchText: req.query.searchText
+    searchText: req.query.searchText,
+    findAuthor: findAuthor,
+
+
   });
 });
+
+
+
+
+function findAuthor(objID) {
+
+  let promise;
+  var re;
+
+  promise = User.findById(objID).exec();
+
+  promise.then((result) => {
+    re = result.username;
+
+
+    return re;
+  });
+    console.log(re);
+  return re;
+}
+
+
+
 
 // New
 router.get('/new', util.isLoggedin, function(req, res) {
@@ -497,26 +531,27 @@ router.delete('/:id', util.isLoggedin, checkPermission, function(req, res) {
     username: "ForDeleting"
   }, function(err, usr) {
     if (!usr) {
-      return  res.send('<script>alert("아직 글 삭제 비밀번호가 지정되지 않았습니다."); window.location.href = "/"; </script>');
-    if (err) {
-      console.log("-----------------------------------------------")
-      console.log(err)
-      console.log("-----------------------------------------------")
-      return res.render('error/404');
-    }
-
-
-    Post.deleteOne({
-      _id: req.params.id
-    }, function(err) {
+      return res.send('<script>alert("아직 글 삭제 비밀번호가 지정되지 않았습니다."); window.location.href = "/"; </script>');
       if (err) {
-        console.log("Error: Delete Failed - posts.js");
-        console.log(err);
+        console.log("-----------------------------------------------")
+        console.log(err)
+        console.log("-----------------------------------------------")
         return res.render('error/404');
       }
-      res.redirect('/posts' + res.locals.getPostQueryString());
-    });
-  }});
+
+
+      Post.deleteOne({
+        _id: req.params.id
+      }, function(err) {
+        if (err) {
+          console.log("Error: Delete Failed - posts.js");
+          console.log(err);
+          return res.render('error/404');
+        }
+        res.redirect('/posts' + res.locals.getPostQueryString());
+      });
+    }
+  });
 });
 
 module.exports = router;

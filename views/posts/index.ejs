@@ -104,8 +104,12 @@
             </a>
           </td>
 
-          <td>
-            <%= post.reply[j] ? post.reply[j].author : "" %>
+          <td colspan="1" class="author">
+              ?
+          </td>
+
+          <td colspan="1" class="date">
+              <span data-date="<%= post.reply[j] ? post.reply[j].created : '' %>" style="text-align: center;"></span>
           </td>
         </tr>
         <% } %>
