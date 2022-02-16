@@ -83,22 +83,25 @@ router.get('/', util.isLoggedin, async function(req, res) {
           as: 'author'
         }
       },
+
       {
         $lookup: {
           from: 'replies',
           localField: 'reply',
           foreignField: '_id',
-          as: 'replyObjects'
+          as: 'reply'
         }
       },
       {
         $lookup: {
           from: 'users',
-          localField: 'reply.author',
+        localField: 'reply.author',
           foreignField: '_id',
-          as: 'autho'
+          as: 'reply_info'
         }
       },
+      
+
       {
         $unwind: '$author',
       },
@@ -155,10 +158,13 @@ router.get('/', util.isLoggedin, async function(req, res) {
           commentCount: {
             $size: '$comments'
           },
-          reply: 1,
-          rep: {
-            user: 1
-          }
+          reply: {
+            title: 1,
+            attachment: 1,
+            author: 1
+          },
+          reply_info : 1,
+
 
         }
       },
@@ -166,7 +172,25 @@ router.get('/', util.isLoggedin, async function(req, res) {
   }
 
 
+//author query builder
+
+// var i = 0;
+//
+// if(posts.author){
+//   for(i = 0; i < posts.author.length; i++) {
+//     re_username = await User.findById(objID).exec();
+//
+//     console.log(re_username);
+//     var obj = {"id": post.author[i], "username": re_username}
+//   }
+// }
+
+
 console.log(posts);
+console.log("=======================1");
+console.log(posts[0].reply);
+console.log("=======================2");
+
 
 
   res.render('posts/index', {
