@@ -22,7 +22,7 @@
           <th scope="col" class="email">Email</th>
           <th scope="col" class="team">부서</th>
           <th scope="col" class="auth">보안등급</th>
-          <th scope="col" class="IP">IP Address</th>
+          <th scope="col" class="IP">IP Address (최근 접속)</th>
         </tr>
       </thead>
 
@@ -43,6 +43,7 @@
           <td class="email" style="overflow: hidden;"><%= user.email %></td>
           <td class="team"><%= user.team %></td>
           <td class="auth"><%= user.auth %></td>
+            <td class="IP"><%= user.last_IP %></td>
           <!-- <td class="MAC"><%= user.MAC %></td> -->
         </tr>
         <% }); %>

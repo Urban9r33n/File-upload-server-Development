@@ -83,6 +83,13 @@ router.get('/', util.isLoggedin, async function(req, res) {
           as: 'author'
         }
       },
+      {
+        $set: {
+          'author': {
+            '$first': '$author'
+          }
+        }
+      },
 
       {
         $lookup: {
@@ -95,16 +102,12 @@ router.get('/', util.isLoggedin, async function(req, res) {
       {
         $lookup: {
           from: 'users',
-        localField: 'reply.author',
+          localField: 'reply.author',
           foreignField: '_id',
-          as: 'reply_info'
+          as: 'replyAuthors'
         }
       },
-      
 
-      {
-        $unwind: '$author',
-      },
       // {$unwind:{path: "$reply",preserveNullAndEmptyArrays: true}},
       {
         $sort: {
@@ -159,12 +162,32 @@ router.get('/', util.isLoggedin, async function(req, res) {
             $size: '$comments'
           },
           reply: {
-            title: 1,
-            attachment: 1,
-            author: 1
+            "$map": {
+              "input": "$reply",
+              "as": "repObj",
+              "in": {
+                "$mergeObjects": [
+                  "$$repObj",
+                  {
+                    "author": {
+                      "$first": {
+                        "$filter": {
+                          "input": "$replyAuthors",
+                          "as": "repA",
+                          "cond": {
+                            "$eq": [
+                              "$$repA._id",
+                              "$$repObj.author"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
           },
-          reply_info : 1,
-
 
         }
       },
@@ -172,24 +195,21 @@ router.get('/', util.isLoggedin, async function(req, res) {
   }
 
 
-//author query builder
+  //author query builder
 
-// var i = 0;
-//
-// if(posts.author){
-//   for(i = 0; i < posts.author.length; i++) {
-//     re_username = await User.findById(objID).exec();
-//
-//     console.log(re_username);
-//     var obj = {"id": post.author[i], "username": re_username}
-//   }
-// }
+  // var i = 0;
+  //
+  // if(posts.author){
+  //   for(i = 0; i < posts.author.length; i++) {
+  //     re_username = await User.findById(objID).exec();
+  //
+  //     console.log(re_username);
+  //     var obj = {"id": post.author[i], "username": re_username}
+  //   }
+  // }
 
 
-console.log(posts);
-console.log("=======================1");
-console.log(posts[0].reply);
-console.log("=======================2");
+
 
 
 
@@ -222,7 +242,7 @@ function findAuthor(objID) {
 
     return re;
   });
-    console.log(re);
+  console.log(re);
   return re;
 }
 

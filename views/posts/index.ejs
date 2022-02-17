@@ -11,9 +11,34 @@
 
   <div class="container mb-3">
 
-    <h2 class="mb-3">Board</h2>
+    <h2 class="mb-3">접수현황</h2>
+
+
 
     <table class="board-table table table-sm border-bottom">
+      <tr>
+        <td>
+          <MARQUEE>한번 작성한 글은 관리자 이외에는 삭제가 불가합니다.
+          </MARQUEE>
+        </td>
+
+        <td class=col-lg-1 style="text-align: center;">
+          <img src="/image/new.gif" border="0"> : 새 글
+        </td>
+        <td class=col-lg-1 style="text-align: center;">
+
+
+          <i class="fas fa-save"></i> : 첨부파일
+        </td>
+        <td class=col-lg-1 style="text-align: center;">
+          <i class="fas fa-lock fa-xs"></i> : 대외비
+        </td>
+      </tr>
+    </table>
+
+
+    <table class="board-table table table-sm border-bottom">
+
 
       <thead class="thead-light">
         <tr>
@@ -28,6 +53,11 @@
           <th scope="col" class="date">Date</th>
         </tr>
       </thead>
+
+
+
+
+
 
       <tbody>
         <% if(posts == null || posts.length == 0){ %>
@@ -46,8 +76,14 @@
           <td class="title">
             <a href="/posts/<%= post._id %><%= getPostQueryString() %>" class="title-container">
 
+              <% let date1 = new Date();  %>
+              <% let date2 = post.createdAt %>
+
               <div data-search-highlight="title" class="title-ellipsis ellipsis float-left">
 
+                <% if(date1.getDate() === date2.getDate()) { %>
+                <img src="/image/new.gif" border="0">
+                <% }%>
 
                 <% if(post.attachment.length != 0){ %>
                 <i class="fas fa-save"></i>
@@ -61,6 +97,8 @@
                 <% if (post.private_check) { %>
                 <i class="fas fa-lock fa-xs"></i>
                 <% } %>
+
+
               </div>
             </a>
           </td>
@@ -71,7 +109,18 @@
             </a>
           </td>
           <td class="date">
-            <span data-date="<%= post.createdAt %>"></span>
+
+
+
+
+            <% if(date1.getDate() === date2.getDate()) { %>
+            <span style="text-align: center;"><%= post.createdAt.getHours() + " : " +  post.createdAt.getMinutes() %></span>
+            <% } else { %>
+            <span data-date="<%= post.createdAt %>" style="text-align: center;"></span>
+            <% }%>
+
+
+
           </td>
         </tr>
 
@@ -81,17 +130,26 @@
 
 
         <% if(post.reply){ %>
-        <% let author_counter = 0; %>
+
 
         <% for(let j = 0; j< post.reply.length; j++) {%>
 
-        <tr style="background-color: #fafafa">
+        <tr style="background-color: #f2f2f2">
           <td colspan="6">
           </td>
           <td class="title">
             <a href="/posts/<%= post.reply[j]._id %>/reply_show<%= getPostQueryString() %>" class="title-container">
               <div data-search-highlight="title" class="title-ellipsis ellipsis float-left">
+
+                <% date2 = post.reply[j].created %>
+
+                <% if(date1.getDate() === date2.getDate()) { %>
+                <img src="/image/new.gif" border="0">
+                <% }%>
+
                 <i class="fas fa-reply fa-rotate-180"></i>
+
+
 
                 <% if(post.reply[j].attachment[0]){ %>
                 <i class="fas fa-save"></i>
@@ -106,15 +164,20 @@
           </td>
 
           <td colspan="1" class="author">
-              <%= post.reply_info[j] ? post.reply_info[author_counter].username : "" %>
+            <%= post.reply[j] ? post.reply[j].author.username : "" %>
           </td>
 
           <td colspan="1" class="date">
-              <span data-date="<%= post.reply[j] ? post.reply[j].created : '' %>" style="text-align: center;"></span>
+
+            <% if(date1.getDate() === date2.getDate()) { %>
+            <span style="text-align: center;"><%= post.reply[j] ? post.reply[j].created.getHours() + " : " +  post.reply[j].created.getMinutes()  : '' %></span>
+            <% } else { %>
+            <span data-date="<%= post.reply[j] ? post.reply[j].created : '' %>" style="text-align: center;"></span>
+            <% }%>
           </td>
         </tr>
         <% } %>
-        <% author_counter += 1;  %>
+
         <% } %>
         <% }) %>
       </tbody>
