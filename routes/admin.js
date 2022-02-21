@@ -256,7 +256,8 @@ router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, 
         if(err){
           req.flash('user', req.body);
           req.flash('errors', util.parseError(err));
-          return res.redirect('/administrator_page/'+req.params.username);
+          console.log(err)
+          return res.redirect('error/404');
         }
         res.redirect('/administrator_page/'+user.username);
       });
