@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 var passport = require('passport');
 
+var Erase = require('./Erase');
+
 var passport = require('../config/passport');
 // schema
 var userSchema = mongoose.Schema({
@@ -129,9 +131,6 @@ userSchema.path('password').validate(function(v) {
 // hash password
 userSchema.pre('save', function(next) {
   var user = this;
-
-
-
 
   if (!user.isModified('password')) {
     return next();

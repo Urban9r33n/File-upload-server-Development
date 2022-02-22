@@ -63,8 +63,8 @@
 
 
             <div class="border-bottom pb-1 mb-1">
-              <div><span>글쓴이</span> : <span data-search-highlight="author"><%= post.author ? post.author.username : "" %></span></div>
-              <div><span>이메일</span> : <span><a href="<% post.author ? post.author.email : "" %>"><%= post.author ? post.author.email : "" %></a></span></div>
+              <div><span>글쓴이</span> : <span data-search-highlight="author"><%= post.author ? post.author.username : "탈퇴한 유저입니다." %></span></div>
+              <div><span>이메일</span> : <span><a href="<% post.author ? post.author.email : "" %>"><%= post.author ? post.author.email : "탈퇴한 유저입니다." %></a></span></div>
               <div><span>조회수</span> : <span><%= post.views %></span></div>
             </div>
 

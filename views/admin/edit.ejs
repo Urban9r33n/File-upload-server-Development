@@ -15,21 +15,18 @@
     <form action="/administrator_page/<%= username %>?_method=put" method="post">
 
       <div class="form-group row">
-        <label for="currentPassword"  class="col-sm-3 col-form-label"></label>
+        <label for="cp" class="col-sm-3 col-form-label"></label>
         <div class="col-sm-9 col-sm-offset-3">
           <input type="password" readonly id="currentPassword" name="currentPassword" value="00000000" class="form-control <%= (errors.currentPassword)?'is-invalid':'' %>">
-          <% if(errors.currentPassword){ %>
-            <span class="invalid-feedback"><%= errors.currentPassword.message %></span>
-          <% } %>
         </div>
       </div>
 
       <div class="form-group row">
-        <label for="currentUser"  class="col-sm-3 col-form-label"></label>
+        <label for="currentUser" class="col-sm-3 col-form-label"></label>
         <div class="col-sm-9 col-sm-offset-3">
-          <input type="hidden" readonly id="currentUser" name="currentUser" value= "<%= currentUser.auth %>" class="form-control <%= (errors.currentUser)?'is-invalid':'' %>">
+          <input type="hidden" readonly id="currentUser" name="currentUser" value="<%= currentUser.auth %>" class="form-control <%= (errors.currentUser)?'is-invalid':'' %>">
           <% if(errors.currentUser){ %>
-            <span class="invalid-feedback"><%= errors.currentUser.message %></span>
+          <span class="invalid-feedback"><%= errors.currentUser.message %></span>
           <% } %>
         </div>
       </div>
@@ -131,10 +128,13 @@
       <div class="form-group row">
         <label for="originalPassword_post" class="col-sm-3 col-form-label">이전 글 삭제 비밀번호</label>
         <div class="col-sm-9 col-sm-offset-3">
-          <input type="password" placeholder="=== 글 삭제 비밀번호 변경 시에만 입력해주세요. ===" id="originalPassword_post" name="originalPassword_post" value="" class="form-control <%= (errors.originalPassword_post)?'is-invalid':'' %>">
-          <% if(errors.originalPassword_post){ %>
-          <span class="invalid-feedback"><%= errors.originalPassword_postn.message %></span>
+          <input type="password" placeholder="=== 글 삭제 비밀번호 변경 시에만 입력해주세요. ===" id="currentPassword_post" name="currentPassword_post" value="" class="form-control <%= (errors.currentPassword)?'is-invalid':'' %>">
+          <% if(errors.currentPassword){ %>
+          <span class="invalid-feedback"><%= errors.currentPassword.message %></span>
           <% } %>
+        </div>
+        <div style="text-align:right;">
+          *초기 글 삭제 비밀번호는 0000 입니다.
         </div>
       </div>
 
@@ -164,11 +164,26 @@
       <div class="buttons">
         <a class="btn btn-dark" href="/administrator_page/<%= username %>">Back</a>
         <button type="submit" class="btn btn-dark">Submit</button>
-      </div>
 
+      </div>
     </form>
 
+
+
+
+    <div class="buttons">
+      <form action="/administrator_page/delete/<%= username %>?_method=put" method="post" class="d-inline">
+        <button type="submit" class="btn btn-dark">회원탈퇴</button>
+      </form>
+    </div>
+
   </div>
+
+
+
+
+
+
 </body>
 
 </html>

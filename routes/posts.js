@@ -14,6 +14,8 @@ var Reply = require('../models/Reply');
 var User = require('../models/User');
 var Comment = require('../models/Comment');
 var File = require('../models/File');
+var Erase = require('../models/Erase');
+var Deleted = require('../models/Deleted');
 var util = require('../util');
 
 
@@ -75,6 +77,22 @@ router.get('/', util.isLoggedin, async function(req, res) {
     posts = await Post.aggregate([{
         $match: searchQuery
       },
+
+      {
+        $lookup: {
+          from: 'deleteds',
+          localField: 'author',
+          foreignField: 'origin',
+          as: 'alterauthor'
+        }
+      },
+      {
+        $set: {
+          'alterauthor': {
+            '$first': '$alterauthor'
+          }
+        }
+      },
       {
         $lookup: {
           from: 'users',
@@ -90,7 +108,6 @@ router.get('/', util.isLoggedin, async function(req, res) {
           }
         }
       },
-
       {
         $lookup: {
           from: 'replies',
@@ -99,12 +116,21 @@ router.get('/', util.isLoggedin, async function(req, res) {
           as: 'reply'
         }
       },
+
       {
         $lookup: {
           from: 'users',
           localField: 'reply.author',
           foreignField: '_id',
           as: 'replyAuthors'
+        }
+      },
+      {
+        $lookup: {
+          from: 'deleteds',
+          localField: 'reply.author',
+          foreignField: 'origin',
+          as: 'alterreplyAuthors'
         }
       },
 
@@ -147,6 +173,12 @@ router.get('/', util.isLoggedin, async function(req, res) {
           title: 1,
           author: {
             username: 1,
+            name: 1,
+            _id: 1
+          },
+          alterauthor: 1,
+          author: {
+                $ifNull: ['$author', '$alterauthor']
           },
           numId_daily: 1,
           numId: 1,
@@ -193,6 +225,8 @@ router.get('/', util.isLoggedin, async function(req, res) {
       },
     ]).exec();
   }
+
+  console.log(posts)
 
 
   //author query builder
@@ -572,7 +606,7 @@ router.delete('/:id', util.isLoggedin, checkPermission, function(req, res) {
   var password = req.body.password;
 
   Erase.findOne({
-    username: "ForDeleting"
+    username: "delete"
   }, function(err, usr) {
     if (!usr) {
       return res.send('<script>alert("아직 글 삭제 비밀번호가 지정되지 않았습니다."); window.location.href = "/"; </script>');
@@ -582,8 +616,8 @@ router.delete('/:id', util.isLoggedin, checkPermission, function(req, res) {
         console.log("-----------------------------------------------")
         return res.render('error/404');
       }
-
-
+    }
+    if (usr && bcrypt.compareSync(req.body.password, usr.password)) {
       Post.deleteOne({
         _id: req.params.id
       }, function(err) {
@@ -594,6 +628,9 @@ router.delete('/:id', util.isLoggedin, checkPermission, function(req, res) {
         }
         res.redirect('/posts' + res.locals.getPostQueryString());
       });
+
+    } else if (!bcrypt.compareSync(req.body.password, usr.password)) {
+      return res.send('<script>alert("비밀번호를 확인해주세요"); window.location.href = "/"; </script>');
     }
   });
 });
@@ -965,38 +1002,54 @@ router.post('/:id/reply_delete', util.isLoggedin, function(req, res) {
 
 
 
-  Reply.findById(req.params.id, function(err, reply) {
-    if (err) {
-      console.log("Error: reply - deelete error - posts.js");
-      console.log(err);
-      return res.render('error/404');
+  Erase.findOne({
+    username: "delete"
+  }, function(err, usr) {
+    if (!usr) {
+      return res.send('<script>alert("아직 글 삭제 비밀번호가 지정되지 않았습니다."); window.location.href = "/"; </script>');
+      if (err) {
+        console.log("-----------------------------------------------")
+        console.log(err)
+        console.log("-----------------------------------------------")
+        return res.render('error/404');
+      }
     }
-
-
-    for (var i = 0; i < reply.attachment.length; i++) {
-      console.log(reply.attachment[i]);
-      File.findByIdAndDelete(reply.attachment[i], (err, data) => {}, function(err, reply) {
+    if (usr && bcrypt.compareSync(req.body.password, usr.password)) {
+      Reply.findById(req.params.id, function(err, reply) {
         if (err) {
           console.log("Error: reply - deelete error - posts.js");
           console.log(err);
           return res.render('error/404');
         }
+
+        for (var i = 0; i < reply.attachment.length; i++) {
+          console.log(reply.attachment[i]);
+          File.findByIdAndDelete(reply.attachment[i], (err, data) => {}, function(err, reply) {
+            if (err) {
+              console.log("Error: reply - deelete error - posts.js");
+              console.log(err);
+              return res.render('error/404');
+            }
+          });
+        }
       });
+      Reply.findByIdAndDelete(replyid, (err, data) => {
+
+      }, function(err, reply) {
+        if (err) {
+          console.log("Error: reply - deelete error - posts.js");
+          console.log(err);
+          return res.render('error/404');
+        }
+        return res.redirect('/');
+      });
+      res.redirect('/');
+
+    } else if (!bcrypt.compareSync(req.body.password, usr.password)) {
+      return res.send('<script>alert("비밀번호를 확인해주세요"); window.location.href = "/"; </script>');
     }
   });
 
-
-  Reply.findByIdAndDelete(replyid, (err, data) => {
-
-  }, function(err, reply) {
-    if (err) {
-      console.log("Error: reply - deelete error - posts.js");
-      console.log(err);
-      return res.render('error/404');
-    }
-    return res.redirect('/');
-  });
-  res.redirect('/');
 });
 
 
@@ -1036,14 +1089,14 @@ async function createSearchQuery(queries) {
 
     if (searchTypes.indexOf('author!') >= 0) {
       var user = await User.findOne({
-        username: queries.searchText
+        name: queries.searchText
       }).exec();
       if (user) postQueries.push({
         author: user._id
       });
     } else if (searchTypes.indexOf('author') >= 0) {
       var users = await User.find({
-        username: {
+        name: {
           $regex: new RegExp(queries.searchText, 'i')
         }
       }).exec();

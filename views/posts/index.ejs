@@ -104,8 +104,8 @@
           </td>
 
           <td class="author">
-            <a href="/posts<%= getPostQueryString(false, { searchType:'author!', searchText:post.author.username }) %>" style="text-decoration:none; color:grey;">
-              <div data-search-highlight="author" class="ellipsis"><%= post.author ? post.author.username : "" %></div>
+            <a href="/posts<%= getPostQueryString(false, { searchType:'author!', searchText:post.author.name }) %>" style="text-decoration:none; color:grey;">
+              <div data-search-highlight="author" class="ellipsis"><%= post.author ? post.author.name : "" %></div>
             </a>
           </td>
           <td class="date">
@@ -114,7 +114,8 @@
 
 
             <% if(date1.getDate() === date2.getDate()) { %>
-            <span style="text-align: center;"><%= post.createdAt.getHours() + " : " +  post.createdAt.getMinutes() %></span>
+            <span style="text-align: center;"><%= post.createdAt.getHours() < 10 ? ("0" + post.createdAt.getHours()) : post.createdAt.getHours() + " : "%>
+              <%=post.createdAt.getMinutes() < 10 ? ("0" + post.createdAt.getMinutes()) : post.createdAt.getMinutes() %></span>
             <% } else { %>
             <span data-date="<%= post.createdAt %>" style="text-align: center;"></span>
             <% }%>
@@ -164,7 +165,7 @@
           </td>
 
           <td colspan="1" class="author">
-            <%= post.reply[j] ? post.reply[j].author.username : "" %>
+            <%= post.reply[j] ? post.reply[j].author.name : "" %>
           </td>
 
           <td colspan="1" class="date">

@@ -9,6 +9,9 @@ var User = require('../models/User');
 var Comment = require('../models/Comment');
 var File = require('../models/File');
 var Log = require('../models/Log');
+var Erase = require('../models/Erase');
+var Deleted = require('../models/Deleted');
+
 var util = require('../util');
 
 
@@ -17,7 +20,7 @@ var passport = require('../config/passport');
 
 
 
-router.get('/', util.isLoggedin,checkADPermission, async function(req, res) {
+router.get('/', util.isLoggedin, checkADPermission, async function(req, res) {
   var page = Math.max(1, parseInt(req.query.page));
   var limit = Math.max(1, parseInt(req.query.limit));
 
@@ -36,11 +39,11 @@ router.get('/', util.isLoggedin,checkADPermission, async function(req, res) {
     maxPage = Math.ceil(count / limit);
 
     users = await User.find(searchQuery)
-    .populate('_id')
-    .sort('-createdAt')
-    .skip(skip)
-    .limit(limit)
-    .exec();
+      .populate('_id')
+      .sort('-createdAt')
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
 
 
@@ -115,7 +118,7 @@ async function createSearchQuery(queries) {
 
 
 //history
-router.get('/history', util.isLoggedin,checkADPermission, async function(req, res) {
+router.get('/history', util.isLoggedin, checkADPermission, async function(req, res) {
   var page = Math.max(1, parseInt(req.query.page));
   var limit = Math.max(1, parseInt(req.query.limit));
 
@@ -134,11 +137,11 @@ router.get('/history', util.isLoggedin,checkADPermission, async function(req, re
     maxPage = Math.ceil(count / limit);
 
     logs = await Log.find(searchQuery)
-    .populate('_id')
-    .sort('-log_At')
-    .skip(skip)
-    .limit(limit)
-    .exec();
+      .populate('_id')
+      .sort('-log_At')
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
 
 
@@ -208,60 +211,139 @@ router.get('/history', util.isLoggedin,checkADPermission, async function(req, re
 
 
 //edit
-router.get('/:username', util.isLoggedin, checkADPermission, function(req, res){
+router.get('/:username', util.isLoggedin, checkADPermission, function(req, res) {
   var user = req.flash('user')[0];
   var errors = req.flash('errors')[0] || {};
-  if(!user){
-    User.findOne({username:req.params.username}, function(err, user){
-      if(err) {
+  if (!user) {
+    User.findOne({
+      username: req.params.username
+    }, function(err, user) {
+      if (err) {
         console.log("===Error: edit-error admin.js===");
         console.log(err);
         return res.render('error/404');
       }
-      if(!user){
+      if (!user) {
         console.log("===Error: edit-error admin.js===");
         console.log(err);
         return res.render('error/404');
-    }
-      res.render('admin/edit', { username:req.params.username, user:user, errors:errors });
+      }
+      res.render('admin/edit', {
+        username: req.params.username,
+        user: user,
+        errors: errors
+      });
     });
-  }
-  else {
-    res.render('admin/edit', { username:req.params.username, user:user, errors:errors });
+  } else {
+    res.render('admin/edit', {
+      username: req.params.username,
+      user: user,
+      errors: errors
+    });
   }
 });
 
 
 // update
 
-router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, next){
-  User.findOne({username:req.params.username})
+router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, next) {
+  User.findOne({
+      username: req.params.username
+    })
     .select('password')
-    .exec(function(err, user){
-      if(err) {
+    .exec(function(err, user) {
+      if (err) {
         console.log("===Error: update-error admin.js===");
         console.log(err);
         return res.render('error/404');
       }
 
+      Erase.findOne({
+          id: 'delete'
+        })
+        .select('password')
+        .exec(function(err, erase) {
+          if (err) {
+            console.log("===Error: update-error admin.js===");
+            console.log(err);
+            return res.render('error/404');
+          }
+
+          if (!erase) {
+            Erase.create({
+              id: 'delete'
+            })
+          } else {
+
+            erase.originalPassword = erase.password != null ? erase.password : bcrypt.hashSync('0000');
+            erase.password = req.body.newPassword_post ? req.body.newPassword_post : erase.password;
+            erase.currentPassword = req.body.currentPassword_post ? req.body.currentPassword_post : erase.currentPassword;
+
+            erase.save(function(err, erase) {
+              if (err) {
+                req.flash('erase', req.body);
+                req.flash('errors', util.parseError(err));
+                console.log(err)
+
+
+              }
+            })
+          }
+
+        });
+
+
       // update user object
       user.originalPassword = user.password;
-      user.password = req.body.newPassword? req.body.newPassword : user.password;
-      for(var p in req.body){
+      user.password = req.body.newPassword ? req.body.newPassword : user.password;
+      for (var p in req.body) {
         user[p] = req.body[p];
       }
 
       // save updated user
-      user.save(function(err, user){
-        if(err){
+      user.save(function(err, user) {
+        if (err) {
           req.flash('user', req.body);
           req.flash('errors', util.parseError(err));
           console.log(err)
           return res.redirect('error/404');
         }
-        res.redirect('/administrator_page/'+user.username);
+        res.redirect('/administrator_page/' + user.username);
       });
+    });
+});
+
+router.put('/delete/:username', util.isLoggedin, checkADPermission, function(req, res, next) {
+
+  User.findOne({
+    username: req.params.username
+  }).exec(function(err, user) {
+    if (err) {
+      console.log("===Error: update-error admin.js===");
+      console.log(err);
+    }
+
+    Deleted.create({
+      origin: user._id,
+      name: user.name
+    });
   });
+
+
+
+  User.deleteOne({
+    username: req.params.username
+  }).exec(function(err, user) {
+    if (err) {
+      console.log("===Error: update-error admin.js===");
+      console.log(err);
+      return res.render('error/404');
+    }
+
+  });
+
+  res.redirect('/administrator_page/');
+
 });
 
 
@@ -293,15 +375,17 @@ router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, 
 
 // private functions
 //req. ~~ is current user.
-function checkADPermission(req, res, next){
-  User.findOne({username:req.params.username}, function(err, user){
-    if(err) {
+function checkADPermission(req, res, next) {
+  User.findOne({
+    username: req.params.username
+  }, function(err, user) {
+    if (err) {
       console.log("===Error: permission error admin.js===");
       console.log(err);
       return res.render('error/404');
     }
 
-    if(req.user.auth != '3') return util.noPermission(req, res);
+    if (req.user.auth != '3') return util.noPermission(req, res);
 
     next();
   });

@@ -43,7 +43,12 @@
           <td class="email" style="overflow: hidden;"><%= user.email %></td>
           <td class="team"><%= user.team %></td>
           <td class="auth"><%= user.auth %></td>
-            <td class="IP"><%= user.last_IP %></td>
+          <% if(user.last_IP != "Invalid") {%>
+          <td class="IP"><%= user.last_IP %></td>
+          <% } else { %>
+          <td class="IP">접속 이력 없음</td>
+          <% }%>
+
           <!-- <td class="MAC"><%= user.MAC %></td> -->
         </tr>
         <% }); %>
