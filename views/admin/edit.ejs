@@ -165,21 +165,26 @@
         <a class="btn btn-dark" href="/administrator_page/<%= username %>">Back</a>
         <button type="submit" class="btn btn-dark">Submit</button>
 
-      </div>
+
     </form>
 
 
-
-
-    <div class="buttons">
-      <form action="/administrator_page/delete/<%= username %>?_method=put" method="post" class="d-inline">
-        <button type="submit" class="btn btn-dark">회원탈퇴</button>
+      <form action="/administrator_page/delete/<%= username %>?_method=put" method="post" name="delete" class="d-inline">
+        <button type="button" class="btn btn-danger" style="float:right;" onclick="btnClick()"><i class="fas fa-trash-alt"></i> 회원탈퇴</button>
       </form>
     </div>
 
   </div>
 
-
+<script>
+  function btnClick() {
+    if(confirm("정말 삭제하시겠습니까?") == true) {
+      document.delete.submit();
+    } else {
+      return;
+    }
+  }
+</script>
 
 
 
