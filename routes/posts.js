@@ -4,6 +4,8 @@ var multer = require('multer');
 var upload = multer({
   dest: 'uploadedFiles/'
 });
+var fs = require('fs');
+var path = require('path');
 
 const bcrypt = require("bcryptjs")
 
@@ -178,7 +180,7 @@ router.get('/', util.isLoggedin, async function(req, res) {
           },
           alterauthor: 1,
           author: {
-                $ifNull: ['$author', '$alterauthor']
+            $ifNull: ['$author', '$alterauthor']
           },
           numId_daily: 1,
           numId: 1,
@@ -279,6 +281,7 @@ function findAuthor(objID) {
   console.log(re);
   return re;
 }
+
 
 
 
@@ -618,6 +621,47 @@ router.delete('/:id', util.isLoggedin, checkPermission, function(req, res) {
       }
     }
     if (usr && bcrypt.compareSync(req.body.password, usr.password)) {
+
+      Post.findOne({
+        _id: req.params.id
+      }, function(err, post) {
+
+        for (var i = 0; i < post.attachment.length; i++) {
+          File.findOneAndDelete({
+            _id: post.attachment[i]
+          }, function(err, file) {
+            if (err) {
+              console.log("Error: Delete Failed - posts.js");
+              console.log(err);
+              res.rendirect('error/404');
+            }
+
+            var file_name = file.serverFileName
+            var filePath = path.join(__dirname, '..', 'uploadedFiles', file_name);
+
+
+            console.log(file_name);
+            if (fs.existsSync(filePath)) {
+              // 파일이 존재한다면 true 그렇지 않은 경우 false 반환
+              try {
+                fs.unlinkSync(filePath);
+                console.log("delete");
+              } catch (error) {
+                console.log(error);
+              }
+            }
+            //
+            console.log("no file");
+            //
+          })
+        }
+      })
+
+
+
+
+
+
       Post.deleteOne({
         _id: req.params.id
       }, function(err) {

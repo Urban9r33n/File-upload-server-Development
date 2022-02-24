@@ -15,7 +15,7 @@ var app = express();
 
 
 // DB setting
-mongoose.connect('mongodb://localhost:27017/');
+mongoose.connect('mongodb://localhost:27017/vdxserver');
 var db = mongoose.connection;
 db.once('open', function(){
   console.log('DB connected');
