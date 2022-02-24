@@ -1,3 +1,4 @@
+//댓글 스키마
 var mongoose = require('mongoose');
 
 // schema

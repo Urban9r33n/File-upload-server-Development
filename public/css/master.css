@@ -115,8 +115,10 @@
 
 /* ----- */
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Nanum Gothic';
   font-size: 14px;
+  font-weight: 400;
+  color: #00000;
 }
 
 .container {
@@ -147,10 +149,19 @@ body {
   table-layout: fixed;
 }
 
-.board-table .enterprise,
+
+
 
 .board-table .numId {
   width: 15%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.board-table .enterprise {
+  width: 20%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -241,6 +252,7 @@ body {
   display: inherit;
 }
 
+.main_text,
 h1 {
   font-family: 'Nanum Gothic';
   font-size: 30px;
@@ -250,9 +262,16 @@ h1 {
 
 h2 {
   text-align: center;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 35px;
-  font-weight: 400;
+  font-family: 'Nanum Gothic';
+  font-size: 30px;
+  font-weight: 900;
+  color: #00000;
+}
+
+h5 {
+  font-family: 'Nanum Gothic';
+  font-size: 20px;
+  font-weight: 900;
   color: #00000;
 }
 
@@ -264,6 +283,15 @@ h2 {
   z-index: 1;
   width: 3rem;
   height: 3rem;
+}
+
+
+
+.box-part{
+    background:#FFF;
+    border-radius:0;
+    padding:60px 10px;
+    margin:30px 0px;
 }
 
  /* ----------------------------------------------
@@ -308,9 +336,7 @@ h2 {
 
 }
 
-.card{
 
-}
 
 .anim {
   animation: shadow-drop-2-bl .5s cubic-bezier(.25, .46, .45, .94) both

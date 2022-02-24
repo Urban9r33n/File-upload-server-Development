@@ -258,41 +258,38 @@ router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, 
         return res.render('error/404');
       }
 
-      Erase.findOne({
-          id: 'delete'
-        })
-        .select('password')
-        .exec(function(err, erase) {
-          if (err) {
-            console.log("===Error: update-error admin.js===");
-            console.log(err);
-            return res.render('error/404');
-          }
+      if (req.body.currentPassword_post && req.body.newPassword_post) {
+        Erase.findOne({
+            id: 'delete'
+          })
+          .select('password')
+          .exec(function(err, erase) {
+            if (err) {
+              console.log("===Error: update-error admin.js===");
+              console.log(err);
+              return res.render('error/404');
+            }
 
-          if (!erase) {
-            Erase.create({
-              id: 'delete'
-            })
-          } else {
+            if (!erase) {
+              Erase.create({
+                id: 'delete'
+              })
+            } else {
 
-            erase.originalPassword = erase.password != null ? erase.password : bcrypt.hashSync('0000');
-            erase.password = req.body.newPassword_post ? req.body.newPassword_post : erase.password;
-            erase.currentPassword = req.body.currentPassword_post ? req.body.currentPassword_post : erase.currentPassword;
+              erase.originalPassword = erase.password != null ? erase.password : bcrypt.hashSync('0000');
+              erase.password = req.body.newPassword_post ? req.body.newPassword_post : erase.password;
+              erase.currentPassword = req.body.currentPassword_post ? req.body.currentPassword_post : erase.currentPassword;
 
-            erase.save(function(err, erase) {
-              if (err) {
-                req.flash('erase', req.body);
-                req.flash('errors', util.parseError(err));
-                console.log(err)
-
-
-              }
-            })
-          }
-
-        });
-
-
+              erase.save(function(err, erase) {
+                if (err) {
+                  req.flash('erase', req.body);
+                  req.flash('errors', util.parseError(err));
+                  console.log(err)
+                }
+              })
+            }
+          });
+      }
       // update user object
       user.originalPassword = user.password;
       user.password = req.body.newPassword ? req.body.newPassword : user.password;

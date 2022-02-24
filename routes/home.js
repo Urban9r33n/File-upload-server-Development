@@ -3,15 +3,35 @@ var router = express.Router();
 var passport = require('../config/passport');
 var util = require('../util');
 var Log = require('../models/Log');
+var User = require('../models/User');
 var requestIp = require('request-ip');
 
 router.get('/main', util.isLoggedin, function(req, res) {
   var post = req.flash('post')[0] || {};
   var errors = req.flash('errors')[0] || {};
-  res.render('home/main', {
-    post: post,
-    errors: errors
+
+
+
+
+  User.findOne({
+    auth: "0"
+  }, function(err, n) {
+    if (n) {
+      res.render('home/main', {
+        n: true,
+        post: post,
+        errors: errors
+      });
+    } else {
+      res.render('home/main', {
+        n: false,
+        post: post,
+        errors: errors
+      });
+    }
   });
+
+
 });
 
 // Home - 메인 페이지
@@ -24,7 +44,10 @@ router.get('/', function(req, res) {
 router.get('/login', function(req, res) {
   var username = req.flash('username')[0];
   var errors = req.flash('errors')[0] || {};
+
+
   res.render('home/login', {
+
     post: 0,
     username: username,
     errors: errors
@@ -39,7 +62,7 @@ router.get('/login/:id', function(req, res) {
 
   var post = req.params.id;
 
-  if(post = 'undefined'){
+  if (post = 'undefined') {
     return res.render('home/login', {
       post: 0,
       username: username,
@@ -111,16 +134,16 @@ router.post('/login',
       res.redirect('/login');
     }
   },
-  passport.authenticate('local-login',  {
+  passport.authenticate('local-login', {
     failureRedirect: '/login'
   }),
   function(req, res) {
 
-        var nextPage = '/main'
+    var nextPage = '/posts'
 
-        if (req.body.post != 0) {
-          var nextPage = '/posts/' + req.body.post
-        }
+    if (req.body.post != 0) {
+      var nextPage = '/posts/' + req.body.post
+    }
 
 
     res.redirect(nextPage);

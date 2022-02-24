@@ -5,35 +5,25 @@
   <%- include('../partials/head') %>
 </head>
 
-<body>
+<body style="background-color: #f8f9fa;">
   <%- include('../partials/nav') %>
-
-
-
-
 
   <div class="container mb-3">
     <br />
 
-
-
-      <div class="card-body">
-        <h2 class="main_text">안녕하세요! <%=currentUser.name %>님</strong></h2>
-      </div>
-      <br />
-
-
-
-
-
+    <!-- <div class="card-body">
+      <h2 class="main_text"> 환영합니다! <%=currentUser.name %>님! </strong></h2>
+    </div> -->
+    <br />
 
     <div class="row c-r">
       <div class="col-md-6">
-        <div class="card anim text-center cards">
-          <div class="card-header">
-            VDX_SERVER
-          </div>
+        <div class="anim box-part text-center" style="background-color: #ffff;  padding: 60px 60px;">
+
+          <i class="fas fa-server fa-5x"></i>
+
           <div class="card-body ">
+
             <h5 class="card-title">VDX_SERVER로 이동하기</h5>
             <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
             <a href="/posts" class="btn btn-dark">VDX_SERVER</a>
@@ -44,14 +34,10 @@
         </div>
       </div>
       <div class="col-md-6">
-        <div class="card anim text-center cards">
-          <div class="card-header">
-            <% if(currentUser.auth === '3'){ %>
-            회원 관리
-            <% } else {%>
-            계정관리
-            <% } %>
-          </div>
+        <div class="anim box-part text-center" style="background-color: #ffff; padding: 60px 60px;">
+
+          <i class="fas fa-user-cog fa-5x"></i>
+
           <div class="card-body ">
             <h5 class="card-title">
               <% if(currentUser.auth === '3'){ %>
@@ -73,15 +59,22 @@
       </div>
     </div>
 
-    <% if(currentUser.auth === '3'){ %>
+    <% if(currentUser.auth === '3') { %>
     <div class="row c-r">
       <div class="col-md-6">
-        <div class="card anim text-center cards">
-          <div class="card-header">
-            VDX_SERVER
-          </div>
+
+        <div class="anim box-part text-center" style="background-color: #ffff;  padding: 60px 60px;">
+          <i class="fas fa-user-check fa-5x"></i>
           <div class="card-body ">
-            <h5 class="card-title">회원 승인 관리</h5>
+
+
+
+
+            <h5 class="card-title">
+            <% if(n) { %>
+            <i class="fas fa-bell fa-2x"  style="color:#D0342C; position:absolute; right:40px; top:20px; z-index:10000;!important"></i>
+            <% } %>회원 승인 관리 </h5>
+
             <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
             <a href="/administrator_page?limit=10&searchType=auth&searchText=0" class="btn btn-dark">승인 관리</a>
           </div>
@@ -91,10 +84,9 @@
         </div>
       </div>
       <div class="col-md-6">
-        <div class="card anim text-center cards">
-          <div class="card-header">
-            개인 정보 수정
-          </div>
+        <div class="anim box-part text-center" style="background-color: #ffff;  padding: 60px 60px;">
+          <i class="fas fa-user-edit fa-5x"></i>
+
           <div class="card-body ">
             <h5 class="card-title">개인 정보 수정</h5>
             <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
@@ -105,6 +97,64 @@
     </div> -->
         </div>
       </div>
+    </div>
+
+    <% } %>
+
+    <% if(currentUser.auth != '3'){ %>
+    <div class="row c-r">
+      <div class="col-md-6">
+        <div class="anim box-part text-center" style="background-color: #ffff;  padding: 60px 60px;">
+          <i class="fas fa-pen fa-5x"></i>
+
+          <div class="card-body ">
+            <h5 class="card-title">새 글 쓰기</h5>
+            <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+            <a href="/posts/new" class="btn btn-dark ">새 글 작성</a>
+          </div>
+          <!-- <div class="card-footer text-muted">
+      2 days ago
+    </div> -->
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="anim box-part text-center" style="background-color: #ffff;  padding: 60px 60px;">
+          <i class="fas fa-question fa-5x"></i>
+
+          <div class="card-body ">
+            <h5 class="card-title">관리자에게 문의</h5>
+            <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#iq">문의하기</a>
+
+
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="iq" tabindex="-1" role="dialog" aria-labelledby="iq" aria-hidden="true" data-backdrop="false">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="iq">문의사항</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    문의사항은 이메일:lykill@inzi.co.kr 또는 설계팀으로 문의 바랍니다.
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="card-footer text-muted">
+      2 days ago
+    </div> -->
+        </div>
+      </div>
+
     </div>
 
     <% } %>

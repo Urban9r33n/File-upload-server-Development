@@ -228,7 +228,7 @@ router.get('/', util.isLoggedin, async function(req, res) {
     ]).exec();
   }
 
-  console.log(posts)
+
 
 
   //author query builder
