@@ -1,17 +1,18 @@
-var mongoose = require('mongoose');
+//로그인 이력 관리 스키마
+var mongoose = require('mongoose'); //몽구스 사용
 
 var logSchema = mongoose.Schema({
-  username: {
+  username: { // 아이디
     type: String,
   },
-  action: {
+  action: { //행위 - 어떤 행위 했는지. Ex) 로그인 시도!
     type: String
   },
-  log_At: {
+  log_At: { // 시간
     type: Date,
     default: Date.now
   },
-  user_IP: {
+  user_IP: { // 접속자 아이피
     type: String
   }
 });

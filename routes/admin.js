@@ -1,25 +1,16 @@
-var express = require('express');
-var router = express.Router();
-var multer = require('multer');
-var upload = multer({
-  dest: 'uploadedFiles/'
-});
-var Post = require('../models/Post');
-var User = require('../models/User');
-var Comment = require('../models/Comment');
-var File = require('../models/File');
-var Log = require('../models/Log');
-var Erase = require('../models/Erase');
-var Deleted = require('../models/Deleted');
+var express = require('express'); // express 서버
+var router = express.Router(); // express 라우터
 
-var util = require('../util');
+var User = require('../models/User'); //유저 모델
+var Log = require('../models/Log'); //로그 모델
+var Erase = require('../models/Erase'); //삭제 비밀번호 모델
+
+var util = require('../util'); //유틸리티
+
+var passport = require('../config/passport'); //패스포트 - 로그인
 
 
-
-var passport = require('../config/passport');
-
-
-
+//회원정보 페이지
 router.get('/', util.isLoggedin, checkADPermission, async function(req, res) {
   var page = Math.max(1, parseInt(req.query.page));
   var limit = Math.max(1, parseInt(req.query.limit));
@@ -59,14 +50,14 @@ router.get('/', util.isLoggedin, checkADPermission, async function(req, res) {
 });
 
 
-
+//검색 함수
 async function createSearchQuery(queries) {
   var searchQuery = {};
   if (queries.searchType && queries.searchText && queries.searchText.length >= 0) {
     var searchTypes = queries.searchType.toLowerCase().split(',');
     var userQueries = [];
 
-
+//부서로 검색
     if (searchTypes.indexOf('team') >= 0) {
       userQueries.push({
         team: {
@@ -75,6 +66,7 @@ async function createSearchQuery(queries) {
       });
     }
 
+//아이디로 검색
     if (searchTypes.indexOf('username') >= 0) {
       userQueries.push({
         username: {
@@ -83,6 +75,7 @@ async function createSearchQuery(queries) {
       });
     }
 
+//이름으로 검색
     if (searchTypes.indexOf('name') >= 0) {
       userQueries.push({
         name: {
@@ -91,6 +84,7 @@ async function createSearchQuery(queries) {
       });
     }
 
+//이메일로 검색
     if (searchTypes.indexOf('email') >= 0) {
       userQueries.push({
         email: {
@@ -99,6 +93,7 @@ async function createSearchQuery(queries) {
       });
     }
 
+//보안등급으로 검색
     if (searchTypes.indexOf('auth') >= 0) {
       userQueries.push({
         auth: {
@@ -117,7 +112,7 @@ async function createSearchQuery(queries) {
 }
 
 
-//history
+//history(로그)
 router.get('/history', util.isLoggedin, checkADPermission, async function(req, res) {
   var page = Math.max(1, parseInt(req.query.page));
   var limit = Math.max(1, parseInt(req.query.limit));
@@ -243,15 +238,14 @@ router.get('/:username', util.isLoggedin, checkADPermission, function(req, res) 
   }
 });
 
-
-// update
-
+// update - 회원정보 수정
 router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, next) {
+//유저 찾아서 변경
   User.findOne({
-      username: req.params.username
+      username: req.params.username //아이디로 유저 검색
     })
-    .select('password')
-    .exec(function(err, user) {
+    .select('password') //비밀번호 선택
+    .exec(function(err, user) { //에러
       if (err) {
         console.log("===Error: update-error admin.js===");
         console.log(err);
@@ -310,8 +304,11 @@ router.put('/:username', util.isLoggedin, checkADPermission, function(req, res, 
     });
 });
 
-router.put('/delete/:username', util.isLoggedin, checkADPermission, function(req, res, next) {
 
+
+//유저 삭제
+router.put('/delete/:username', util.isLoggedin, checkADPermission, function(req, res, next) {
+//유저 검색
   User.findOne({
     username: req.params.username
   }).exec(function(err, user) {
@@ -320,6 +317,7 @@ router.put('/delete/:username', util.isLoggedin, checkADPermission, function(req
       console.log(err);
     }
 
+//삭제된 유저 항목에 저장
     Deleted.create({
       origin: user._id,
       name: user.name
@@ -327,7 +325,7 @@ router.put('/delete/:username', util.isLoggedin, checkADPermission, function(req
   });
 
 
-
+//원래 있던 유저 정보 모두 삭제
   User.deleteOne({
     username: req.params.username
   }).exec(function(err, user) {
@@ -370,6 +368,7 @@ router.put('/delete/:username', util.isLoggedin, checkADPermission, function(req
 // });
 
 
+// 권한 확인
 // private functions
 //req. ~~ is current user.
 function checkADPermission(req, res, next) {

@@ -1,28 +1,30 @@
-var mongoose = require('mongoose');
-var fs = require('fs');
-var path = require('path');
+//파일 업로드 스키마
+
+var mongoose = require('mongoose'); //몽구스 사용
+var fs = require('fs'); //파일 관리도구 사용
+var path = require('path'); //경로 도구 사용
 
 // schema
 var fileSchema = mongoose.Schema({
-  originalFileName: {
+  originalFileName: { //파일 원래 이름
     type: String
   },
-  serverFileName: {
+  serverFileName: { //서버에 저장될 파일 이름(암호화 이후)
     type: String
   },
-  size: {
+  size: { //파일 크기
     type: Number
   },
-  uploadedBy: {
+  uploadedBy: { //업로드 한 사람 (db-id)
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true
   },
-  postId: {
+  postId: { //업로드 된 게시물 (db-id)
     type: mongoose.Schema.Types.ObjectId,
     ref: 'post'
   },
-  isDeleted: {
+  isDeleted: { //삭제 여부 - 현재 사용 안함. 이후에 이력관리 필요시 활성화 필요.
     type: Boolean,
     default: false
   },

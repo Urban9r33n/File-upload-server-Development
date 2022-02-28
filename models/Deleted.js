@@ -1,26 +1,28 @@
-var mongoose = require('mongoose');
+//탈퇴유저용 스키마
+
+var mongoose = require('mongoose'); //몽구스 사용
 // schema
 var deletedSchema = mongoose.Schema({
-  origin: {
+  origin: { //원래 유저 db-id
       type: mongoose.Schema.Types.ObjectId,
   },
-  team: {
+  team: { //팀
     type: String,
     default: "탈퇴한 유저입니다."
   },
-  username: {
+  username: { //아이디
     type: String,
     default: "탈퇴한 유저입니다."
   },
-  password: {
+  password: { //비밀번호
     type: String,
     default: "탈퇴한 유저입니다."
   },
-  name: {
+  name: { //이름
     type: String,
 
   },
-  email: {
+  email: { //이메일
     type: String,
     default: "탈퇴한 유저입니다."
   },

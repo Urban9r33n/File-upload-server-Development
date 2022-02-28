@@ -1,10 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var Comment = require('../models/Comment');
-var Post = require('../models/Post');
-var util = require('../util');
+var express = require('express'); //Express 서버
+var router = express.Router(); //라우터
+var Comment = require('../models/Comment'); //댓글 모델
+var Post = require('../models/Post'); // 게시글 모델
 
-// create
+var util = require('../util'); //유틸리티
+
+// create (댓글 생성)
 router.post('/', util.isLoggedin, checkPostId, function(req, res) {
   var post = res.locals.post;
 
@@ -27,7 +28,7 @@ router.post('/', util.isLoggedin, checkPostId, function(req, res) {
   });
 });
 
-// update
+// update (댓글 수정)
 router.put('/:id', util.isLoggedin, checkPermission, checkPostId, function(req, res) {
   var post = res.locals.post;
 
@@ -52,7 +53,7 @@ router.put('/:id', util.isLoggedin, checkPermission, checkPostId, function(req, 
   });
 });
 
-// destroy
+// destroy (댓글 삭제)
 router.delete('/:id', util.isLoggedin, checkPermission, checkPostId, function(req, res) {
   var post = res.locals.post;
 
@@ -74,6 +75,7 @@ router.delete('/:id', util.isLoggedin, checkPermission, checkPostId, function(re
 module.exports = router;
 
 // private functions
+//권한 확인용 함수
 function checkPermission(req, res, next) {
   Comment.findOne({
     _id: req.params.id
@@ -84,7 +86,7 @@ function checkPermission(req, res, next) {
     next();
   });
 }
-
+//게시글 번호 확인용 함수
 function checkPostId(req, res, next) {
   Post.findOne({
     _id: req.query.postId

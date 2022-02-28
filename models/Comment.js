@@ -1,34 +1,34 @@
 //댓글 스키마
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'); //몽구스 사용
 
 // schema
 var commentSchema = mongoose.Schema({
-  post: {
+  post: { //댓글이 달린 게시글 id
     type: mongoose.Schema.Types.ObjectId,
     ref: 'post',
     required: true
   },
-  author: {
+  author: { //작성자
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true
   },
-  parentComment: {
+  parentComment: { //상위댓글
     type: mongoose.Schema.Types.ObjectId,
     ref: 'comment'
   },
-  text: {
+  text: { //내용
     type: String,
     required: [true, 'text is required!']
   },
-  isDeleted: {
+  isDeleted: { // 삭제여부
     type: Boolean
   },
-  createdAt: {
+  createdAt: { //작성날짜
     type: Date,
     default: Date.now
   },
-  updatedAt: {
+  updatedAt: { //수정날짜
     type: Date
   },
 }, {
@@ -37,6 +37,7 @@ var commentSchema = mongoose.Schema({
   }
 });
 
+//대댓글 관련 기능
 commentSchema.virtual('childComments')
   .get(function() {
     return this._childComments;
@@ -44,6 +45,7 @@ commentSchema.virtual('childComments')
   .set(function(value) {
     this._childComments = value;
   });
+
 
 // model & export
 var Comment = mongoose.model('comment', commentSchema);

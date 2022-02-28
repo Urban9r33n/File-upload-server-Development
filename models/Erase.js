@@ -1,19 +1,21 @@
-var mongoose = require('mongoose');
-var bcrypt = require('bcryptjs');
+// 삭제용 비밀번호 스키마
+var mongoose = require('mongoose');  //몽구스 사용
+var bcrypt = require('bcryptjs'); //암호화 도구 사용
 
 var eraseSchema = mongoose.Schema({
-  id: {
+  id: { //아이디 (고정)
     type: String,
     required: true,
     unique: true
   },
-  password: {
+  password: { //비밀번호
     type: String,
     required: true,
-    default:  bcrypt.hashSync('0000')
+    default:  bcrypt.hashSync('0000') //초기비밀번호 0000
   }
 });
 
+//가상 비밀번호 스키마 - 임시
 eraseSchema.virtual('originalPassword')
   .get(function() {
     return this._originalPassword;
@@ -39,6 +41,7 @@ eraseSchema.virtual('newPassword')
   });
 
 
+//삭제 및 생성 + Validation.
   var passwordRegex = /^(?=.*\d).{4,}$/;
   var passwordRegexErrorMessage = '4자리 이상의 숫자만 입력이 가능합니다!';
   eraseSchema.path('password').validate(function(v) {
@@ -54,9 +57,9 @@ eraseSchema.virtual('newPassword')
     // update erase
     if (!erase.isNew) {
       if (!erase.currentPassword) {
-        erase.invalidate('currentPassword', 'Current Password is required!');
+        erase.invalidate('currentPassword', '현재 비밀번호가 필요합니다!');
       } else if (!bcrypt.compareSync(erase.currentPassword, erase.originalPassword)) { //compare password here if needed
-        erase.invalidate('currentPassword', 'Current Password is invalid!');
+        erase.invalidate('currentPassword', '비밀번호가 틀립니다!');
       }
 
       if (erase.newPassword && !passwordRegex.test(erase.newPassword)) {

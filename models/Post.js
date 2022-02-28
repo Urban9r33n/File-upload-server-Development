@@ -1,76 +1,77 @@
+//게시글 스키마
 var mongoose = require('mongoose');
 var Counter = require('./Counter');
 var Daily_Counter = require('./Dailycounter');
 
 // schema
 var postSchema = mongoose.Schema({
-  title: {
+  title: { //제목
     type: String,
     required: [true, '제목을 입력하세요!']
   },
-  body: {
+  body: { //내용
     type: String,
     required: [true, '내용을 입력하세요!']
   },
-  author: {
+  author: { //작성자
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true
   },
-  views: {
+  views: { //조회수
     type: Number,
     default: 0
   },
-  numId: {
+  numId: { //글번호
     type: Number
   },
-  numId_daily: {
+  numId_daily: { //접수번호
     type: String
   },
-  attachment: [{
+  attachment: [{ //첨부파일
     type: mongoose.Schema.Types.ObjectId,
     ref: 'file'
   }],
-  createdAt: {
+  createdAt: { //작성날짜
     type: Date,
     default: Date.now
   },
-  updatedAt: {
+  updatedAt: { //수정 날짜
     type: Date
   },
-  nation: {
+  nation: { //국가
     type: String,
     required: [true, 'Nation is required!']
   },
-  enterprise: {
+  enterprise: { //업체
     type: String,
     required: [true, 'Enterprise is required!']
   },
-  section: {
+  section: { //부서
     type: String,
     required: [true, 'Section is required!']
   },
-  code: {
+  code: { //코드
     type: String,
     unique:true
   },
-  sender_dept: {
+  sender_dept: { //보낸이 부서
     type: String,
     required: [true, 'Sender department is required!']
   },
-  sender: {
+  sender: { //보낸이
     type: String,
     required: [true, 'Sender is required!']
   },
-  private_check: {
+  private_check: { //대외비 여부
     type: Boolean,
     requried: [true, 'checker is requried!']
   },
-  reply: [{
-    type: mongoose.Schema.Types.ObjectId,
+  reply: [{ //답글 db-id
+        type: mongoose.Schema.Types.ObjectId,
     ref: 'replies'
   }],
-  is_reply: {
+  is_reply: { //답글 유무 - 사용 x
     type: Boolean,
     default: false
   }
@@ -79,7 +80,7 @@ var postSchema = mongoose.Schema({
 
 
 
-
+//글쓸때마다 글번호(counter) + 1
 postSchema.pre('save', async function(next) {
   var post = this;
 
@@ -121,8 +122,7 @@ postSchema.pre('save', async function(next) {
 
     daily_counter.today = today;
 
-
-
+    //오늘날짜와 임시날짜가 같으면 + 1 하고 저장
     if (daily_counter.today === daily_counter.temp) {
       daily_counter.count = daily_counter.count + 1;
       daily_counter.save();
