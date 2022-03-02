@@ -1066,15 +1066,17 @@ router.post('/:id/reply_delete', util.isLoggedin, function(req, res) {
           return res.render('error/404');
         }
 
-        for (var i = 0; i < reply.attachment.length; i++) {
-          console.log(reply.attachment[i]);
-          File.findByIdAndDelete(reply.attachment[i], (err, data) => {}, function(err, reply) {
-            if (err) {
-              console.log("Error: reply - deelete error - posts.js");
-              console.log(err);
-              return res.render('error/404');
-            }
-          });
+        if (reply!= null) {
+          for (var i = 0; i < reply.attachment.length; i++) {
+            console.log(reply.attachment[i]);
+            File.findByIdAndDelete(reply.attachment[i], (err, data) => {}, function(err, reply) {
+              if (err) {
+                console.log("Error: reply - deelete error - posts.js");
+                console.log(err);
+                return res.render('error/404');
+              }
+            });
+          }
         }
       });
       Reply.findByIdAndDelete(replyid, (err, data) => {
