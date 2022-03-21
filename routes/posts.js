@@ -28,17 +28,17 @@ var passport = require('../config/passport');
 //auto mailer
 const nodemailer = require('nodemailer');
 
-//test find password
-var variable = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z".split(",");
-var randomPassword = createRandomPassword(variable, 8); //비밀번호 랜덤 함수
-function createRandomPassword(variable, passwordLength) {
-  var randomString = "";
-  for (var j = 0; j < passwordLength; j++) randomString += variable[Math.floor(Math.random() * variable.length)];
-  return randomString
-}
+// //test find password
+// var variable = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z".split(",");
+// var randomPassword = createRandomPassword(variable, 8); //비밀번호 랜덤 함수
+// function createRandomPassword(variable, passwordLength) {
+//   var randomString = "";
+//   for (var j = 0; j < passwordLength; j++) randomString += variable[Math.floor(Math.random() * variable.length)];
+//   return randomString
+// }
+//
 
-
-// 본인 Gmail 계정
+// 본인 다음 계정
 const EMAIL = "upload_team@daum.net";
 const EMAIL_PW = "brownie112";
 
@@ -52,6 +52,9 @@ let transport = nodemailer.createTransport({
     user: EMAIL,
     pass: EMAIL_PW,
   },
+  tls: {
+    rejectUnauthorized:false
+  }
 });
 
 
@@ -313,13 +316,13 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
   // 이메일 수신자
   let receiverEmail = "";
 
-  //전송내용
-  let mailOptions = {
-    from: EMAIL,
-    to: receiverEmail,
-    subject: "[VDX-Server] 새 글 알림",
-    html: "<h1>Binding에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>",
-  };
+  // //전송내용
+  // let mailOptions = {
+  //   from: EMAIL,
+  //   to: receiverEmail,
+  //   subject: "[VDX-Server] 새 글 알림",
+  //   html: "<h1>Binding에서 새로운 비밀번호를 알려드립니다.</h1> <h2> 비밀번호 : " + randomPassword + "</h2>",
+  // };
 
   req.body.attachment = attachment;
   req.body.author = req.user._id;
@@ -334,10 +337,14 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
       req.flash('errors', util.parseError(err));
       return res.redirect('/posts/new' + res.locals.getPostQueryString());
     }
+
+
     if (attachment[0] != null) {
       attachment.postId = post._id;
       attachment[0].save();
     }
+
+
 
     if (!email_list) {} else if (email_list.length == 1 || !Array.isArray(email_list)) {
       if (email_list[0] == '1') {
@@ -352,7 +359,7 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
           .select('email')
           .exec(function(err, users) {
             for (var j = 0; j < users.length; j++) {
-              send_mail(users[j].email, contents);
+              send_mail(users[j].email, contents, post.id);
             }
           });
       } else {
@@ -366,7 +373,7 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
           .exec(function(err, users) {
 
             for (var j = 0; j < users.length; j++) {
-              send_mail(users[j].email, contents);
+              send_mail(users[j].email, contents, post.id);
             }
           });
       }
@@ -383,7 +390,7 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
           .select('email')
           .exec(function(err, users) {
             for (var j = 0; j < users.length; j++) {
-              send_mail(users[j].email, contents);
+              send_mail(users[j].email, contents, post.id);
             }
           });
 
@@ -395,7 +402,7 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
             'team': -1
           }).select('email').exec(function(err, users) {
             for (var j = 0; j < users.length; j++) {
-              send_mail(users[j].email, contents);
+              send_mail(users[j].email, contents, post.id);
             }
           });
         }
@@ -414,7 +421,7 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
             .select('email')
             .exec(function(err, users) {
               for (var j = 0; j < users.length; j++) {
-                send_mail(users[j].email, contents);
+                send_mail(users[j].email, contents, post.id);
               }
             });
         }
@@ -422,18 +429,21 @@ router.post('/', util.isLoggedin, upload.array('attachment'), async function(req
     }
 
 
-    res.redirect('/posts' + res.locals.getPostQueryString(false, {
-      page: 1,
-      searchText: ''
-    }));
   });
+
+
+  res.redirect('/posts' + res.locals.getPostQueryString(false, {
+    page: 1,
+    searchText: ''
+  }));
 });
 
 
 
-var send_mail = function(receiver, contents) {
+var send_mail = function(receiver, contents, id) {
   receiverEmail = receiver;
-  mailOptions = {
+  href = "192.0.2.125/posts/"+id
+  let mailOptions = {
     from: 'VDX_SERVER <upload_team@daum.net>',
     to: receiverEmail,
     subject: "[VDX-Server] 새 글 알림",
@@ -442,7 +452,7 @@ var send_mail = function(receiver, contents) {
       "<div>" +
       "<div><span>국가</span> : <span>" + contents.nation + "</span></div>" +
       "<div><span>고객사</span> : <span>" + contents.enterprise + "</span></div>" +
-      "<div><span><a href='#'>CODE</a></span> : <span>" + contents.code + "</span></div>" +
+      "<div><span><a href='"+ href +"'>CODE</a></span> : <span>" + contents.code + "</span></div>" +
       "<div><span>내용구분</span> : <span>" + contents.section + "</span></div>" +
       "<div><span>보낸이</span> : <span>" + contents.sender + "</span></div>" +
       "<div><span>부서</span> : <span>" + contents.sender_dept + "</span></div>" +

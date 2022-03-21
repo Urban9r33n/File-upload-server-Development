@@ -4,6 +4,7 @@ var router = express.Router(); // express 라우터
 var User = require('../models/User'); //유저 모델
 var Log = require('../models/Log'); //로그 모델
 var Erase = require('../models/Erase'); //삭제 비밀번호 모델
+var Deleted = require('../models/Deleted'); //삭제 비밀번호 모델
 
 var util = require('../util'); //유틸리티
 

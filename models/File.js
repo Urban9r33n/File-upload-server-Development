@@ -37,7 +37,7 @@ fileSchema.methods.processDelete = function() {
 };
 fileSchema.methods.getFileStream = function() {
   var stream;
-  var filePath = path.join(__dirname, '..', 'uploadedFiles', this.serverFileName);
+  var filePath = path.join(__dirname, '..', 'uploadedFiles', this.serverFileName); //파일저장경로
   var fileExists = fs.existsSync(filePath);
   if (fileExists) {
     stream = fs.createReadStream(filePath);
